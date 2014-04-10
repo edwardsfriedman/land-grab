@@ -1,27 +1,23 @@
 var express = require('express');
 var app = express();
-var mongojs = require('mongojs');
+var MongoClient = require('mongodb').MongoClient;
+var Server = require('mongodb').Server;
 var engines = require('consolidate');
 app.engine('html', engines.hogan);
 app.set('views', __dirname + '/templates');
+app.use(express.bodyParser());
 
 var dbUrl = "test";
 var collections = ["entries"];
 
-var db = mongojs.connect(dbUrl,collections, function(err, val){
-	if(err){
-		console.log("failed to connect");
-	} else {
-		console.log("connected to db");
-	}
+var mongoClient = new MongoClient(new Server('localhost', 27017));
+mongoClient.connect("mongodb://localhost:27017/test", function(err, db) {
+    if(!err) {
+        console.log("We are connected");
+    }
+    var db = mongoClient.db("test");
 });
 
-
-/*
-var conn = anyDB.createConnection('sqlite3://chatroom.db');
-*/
-
-app.use(express.bodyParser());
 
 
 app.get('/', function(request, response){
