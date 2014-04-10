@@ -1,0 +1,73 @@
+<DOCTYPE HTML!>
+<html>
+  <head>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src='map.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
+    <link href="global.css" rel='stylesheet'/>
+  </head>
+  <body>
+    <div id="map">
+      <div id="header">
+        <div id="title" class="container">Mapping the Global Land Grab</div>
+        <div id="buttonContain">
+          <button id="search" class="container" onclick="srchButton()">search</button>
+          <button id="share" class="container" onclick="shareButton()">share</button>
+        </div>
+        <div id="actionBox" class="container">
+          <div id="searchBox">
+            <form>
+              <span class="bolder"> search:</span><br>
+              <input class="textField" id="searchField" type="text" name="searchText"><br>
+              <button id="doSearch"> search </button>
+              <input class="criteria" type="checkbox" name="searchArea" value="area">search visible area</input><br>
+              <span style="text-decoration: underline"> types of media:</span><br>
+              <input class="criteria" type="checkbox" name="scholars" value="schlrs">scholarly articles</input><br>
+              <input class="criteria" type="checkbox" name="images" value="imgs">image / video</input><br>
+              <input class="criteria" type="checkbox" name="organizations" value="orgs">organizations</input><br>
+            </form>
+          </div>
+          <div id="shareBox">
+            <form>
+              <span class="bolder"> share:</span><br>
+              name: <input class="textField" id="postName" type="text" name="name"><br>
+              <span style="text-decoration: underline"> type of media (check all that apply):</span><br>
+              <input class="criteria" type="checkbox" name="scholars" value="schlrs">scholarly article</input><br>
+              <input class="criteria" type="checkbox" name="images" value="imgs">image / video</input><br>
+              <input class="criteria" type="checkbox" name="organizations" value="orgs">organization</input><br>
+              location: <input class="textField" id="postLoc" type="text" name="location"><br>
+              url: <input class="textField" id="postLink" type="text" name="link"><br>
+              description: <input class="textField" id="postDescrip" type="text" name="desc"><br>
+              tags: <input class="tag" type="checkbox">tag 1</input>
+              <input class="tag" type="checkbox">tag 2</input>
+              <input class="tag" type="checkbox">tag 3</input><br>
+              <input class="tag" type="checkbox">tag 4</input>
+              <input class="tag" type="checkbox">tag 5</input>
+              <input class="tag" type="checkbox">tag 6</input><br>
+              <button id="post" >submit</button>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      /**
+      // Create a map in the div #map
+      L.mapbox.map('map', 'examples.map-9ijuk24y');
+      var layer = L.mapbox.tileLayer('examples.map-9ijuk24y');
+      layer.on('ready', function() {
+        // the layer has been fully loaded now, and you can
+        // call .getTileJSON and investigate its properties
+      });**/
+      var bounds = new L.LatLngBounds(new L.LatLng(85.00542734823001, 214.62890625),
+               new L.LatLng(-85.035941506574, -194.4140625));
+      var map = L.mapbox.map('map', 'friedboy.hml0l3kn', {
+          minZoom: 2,
+          maxBounds: bounds
+      });
+      map.zoomControl.setPosition('bottomleft');
+      //L.mapbox.markers.icon();
+    </script>
+  </body>
+</html>
