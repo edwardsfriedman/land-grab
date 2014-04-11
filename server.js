@@ -7,22 +7,48 @@ app.engine('html', engines.hogan);
 app.set('views', __dirname + '/templates');
 app.use(express.bodyParser());
 
+var collections, db;
 var dbUrl = "test";
-var collections = ["entries"];
-
 var mongoClient = new MongoClient(new Server('localhost', 27017));
 mongoClient.connect("mongodb://localhost:27017/test", function(err, db) {
     if(!err) {
         console.log("We are connected");
+		db = mongoClient.db("test");
+		collections = db.collections(function(err,collecs){
+			if(err){
+				console.log("error fetching collections");
+			} else {
+				console.log("success");
+				console.log(collecs);
+			}
+		});
+    } else {
+    	console.log("Error connecting to db. exiting");
+    	process.exit(code=0);
     }
-    var db = mongoClient.db("test");
 });
-
-
 
 app.get('/', function(request, response){
 	console.log("homepage");
 	response.render('homepage.html');
+});
+
+app.get('/testInsert', function(request, response){
+	console.log("insert page hit");
+	console.log(collections);
+})
+
+app.get('/testFetchAll', function(request, response){
+	console.log("fetchAll page hit");
+	db.entries.find(function(err, entries){
+		if(err || !entries) {
+			console.log("error or no results found");
+		} else {
+			entries.forEach(function(entry){
+				console.log(entry);
+			});
+		}
+	});
 });
 
 app.post('/superSecretUrl69', function(request, response){
@@ -38,9 +64,6 @@ app.post('/superSecretUrl69', function(request, response){
 	});
 
 	var query = ""
-
-
-
 });
 
 var server = app.listen(8081, function(){
