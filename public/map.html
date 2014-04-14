@@ -6,6 +6,7 @@
     <script src='map.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
     <link href="global.css" rel='stylesheet'/>
+    <link href="easydropdown.metro.css" rel='stylesheet'/>
   </head>
   <body>
     <div id="map">
@@ -19,14 +20,109 @@
           <div id="searchBox">
             <form>
               <span class="bolder"> search:</span><br>
-              <input class="textField" id="searchField" type="text" name="searchText"><br>
-              <button id="doSearch"> search </button>
               <input class="criteria" type="checkbox" name="searchArea" value="area">search visible area</input><br>
+              <div id="nameDrop"> name: <br>
+                <button type="button" id="nameButton" class="dropAdder" onclick="addDrop('nameButton','nameDrop','',3)"> + </button>
+                <select class="dropdown">
+                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                </select><br>
+              </div>
+              <div id="locDrop"> location: <br>
+                <button type="button" id="locButton" class="dropAdder" onclick="addDrop('locButton','locDrop','',3)"> + </button>
+                <select class="dropdown">
+                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                </select><br>
+              </div>
+              <div id="settingDrop"> setting: <br>
+                <button type="button" id="settingButton" class="dropAdder" onclick="addDrop('settingButton','settingDrop','',3)"> + </button>
+                <select class="dropdown">
+                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                </select><br>
+              </div>
+              <div id="entitiesDrop"> companies & individuals: <br>
+                <button type="button" id="entitiesButton" class="dropAdder" onclick="addDrop('entitiesButton','entitiesDrop','',3)"> + </button>
+                <select class="dropdown">
+                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                </select><br>
+              </div>
+              <div id="governmentsDrop">governments: <br>
+                <button type="button" id="govButton" class="dropAdder" onclick="addDrop('govButton','governmentsDrop','',3)"> + </button>
+                <select class="dropdown">
+                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                </select><br>
+              </div>
+              <div id="useBeforeDrop"> land use before grab: <br>
+                <button type="button" id="beforeButton" class="dropAdder" onclick="addDrop('beforeButton','useBeforeDrop','',3)"> + </button>
+                <select class="dropdown">
+                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                </select><br>
+              </div>
+              <div id="useAfterDrop"> land use after grab: <br>
+                <button type="button" id="afterButton" class="dropAdder" onclick="addDrop('afterButton','useAfterDrop','',3)"> + </button>
+                <select class="dropdown">
+                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                </select><br>
+              </div>
+              <div id="resistanceDrop">forms of resistance: <br>
+                <button type="button" id="resistButton" class="dropAdder" onclick="addDrop('resistButton','resistanceDrop','',3)"> + </button>
+                <select class="dropdown">
+                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                  <option value="1"> Option 1 </option>
+                </select><br>
+              </div>
               <span style="text-decoration: underline"> types of media:</span><br>
               <input class="criteria" type="checkbox" name="scholars" value="schlrs">scholarly articles</input><br>
               <input class="criteria" type="checkbox" name="images" value="imgs">image / video</input><br>
               <input class="criteria" type="checkbox" name="organizations" value="orgs">organizations</input><br>
-            </form>
+              <button type="button" id="submitButton" onclick="doSearch()"> search </button>
+            <form>
           </div>
           <div id="shareBox">
             <form>
@@ -51,23 +147,5 @@
         </div>
       </div>
     </div>
-    <script>
-      /**
-      // Create a map in the div #map
-      L.mapbox.map('map', 'examples.map-9ijuk24y');
-      var layer = L.mapbox.tileLayer('examples.map-9ijuk24y');
-      layer.on('ready', function() {
-        // the layer has been fully loaded now, and you can
-        // call .getTileJSON and investigate its properties
-      });**/
-      var bounds = new L.LatLngBounds(new L.LatLng(85.00542734823001, 214.62890625),
-               new L.LatLng(-85.035941506574, -194.4140625));
-      var map = L.mapbox.map('map', 'friedboy.hml0l3kn', {
-          minZoom: 2,
-          maxBounds: bounds
-      });
-      map.zoomControl.setPosition('bottomleft');
-      //L.mapbox.markers.icon();
-    </script>
   </body>
 </html>

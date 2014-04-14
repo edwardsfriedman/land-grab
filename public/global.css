@@ -79,3 +79,11 @@ body {
 .bolder {
     font-size: 14pt;
 }
+
+.dropAdder {
+  float: right;
+}
+
+.dropRemover {
+  float: right;
+}
