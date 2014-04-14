@@ -4,17 +4,21 @@
     <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src='map.js'></script>
+    <script type="text/javascript" src="../grabdata.json"></script>
     <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
     <link href="global.css" rel='stylesheet'/>
     <link href="easydropdown.metro.css" rel='stylesheet'/>
   </head>
   <body>
     <div id="map">
+    </div>
       <div id="header">
         <div id="title" class="container">Mapping the Global Land Grab</div>
         <div id="buttonContain">
           <button id="search" class="container" onclick="srchButton()">search</button>
           <button id="share" class="container" onclick="shareButton()">share</button>
+        </div>
+        <div id="resultsContain" class="container">
         </div>
         <div id="actionBox" class="container">
           <div id="searchBox">
@@ -25,103 +29,60 @@
                 <button type="button" id="nameButton" class="dropAdder" onclick="addDrop('nameButton','nameDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
+                  <option value="">Select a Name</option>
                 </select><br>
               </div>
               <div id="locDrop"> location: <br>
                 <button type="button" id="locButton" class="dropAdder" onclick="addDrop('locButton','locDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
+                  <option value="">Select a Location</option>
                 </select><br>
               </div>
-              <div id="settingDrop"> setting: <br>
+              <div id="settingDrop" style="display: none"> setting: <br>
                 <button type="button" id="settingButton" class="dropAdder" onclick="addDrop('settingButton','settingDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
                 </select><br>
               </div>
-              <div id="entitiesDrop"> companies & individuals: <br>
+              <div id="entitiesDrop"> governments, companies & individuals: <br>
                 <button type="button" id="entitiesButton" class="dropAdder" onclick="addDrop('entitiesButton','entitiesDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
+                  <option value="">Select a Culpable Entity</option>
                 </select><br>
               </div>
-              <div id="governmentsDrop">governments: <br>
+              <div id="governmentsDrop" style="display: none">>governments: <br>
                 <button type="button" id="govButton" class="dropAdder" onclick="addDrop('govButton','governmentsDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
                 </select><br>
               </div>
-              <div id="useBeforeDrop"> land use before grab: <br>
+              <div id="useBeforeDrop" style="display: none">> land use before grab: <br>
                 <button type="button" id="beforeButton" class="dropAdder" onclick="addDrop('beforeButton','useBeforeDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
                 </select><br>
               </div>
-              <div id="useAfterDrop"> land use after grab: <br>
+              <div id="useAfterDrop" style="display: none"> land use after grab: <br>
                 <button type="button" id="afterButton" class="dropAdder" onclick="addDrop('afterButton','useAfterDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
                 </select><br>
               </div>
               <div id="resistanceDrop">forms of resistance: <br>
                 <button type="button" id="resistButton" class="dropAdder" onclick="addDrop('resistButton','resistanceDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
-                  <option value="1"> Option 1 </option>
+                  <option value="">Select a Name</option>
                 </select><br>
               </div>
               <span style="text-decoration: underline"> types of media:</span><br>
               <input class="criteria" type="checkbox" name="scholars" value="schlrs">scholarly articles</input><br>
               <input class="criteria" type="checkbox" name="images" value="imgs">image / video</input><br>
               <input class="criteria" type="checkbox" name="organizations" value="orgs">organizations</input><br>
-              <button type="button" id="submitButton" onclick="doSearch()"> search </button>
+              <button class="container" type="button" id="submitButton" onclick="doSearch()"> search </button>
+              <button class="container" type="button" onclick="hideresults()"> hide results </button>
             <form>
           </div>
           <div id="shareBox">
@@ -142,10 +103,9 @@
               <input class="tag" type="checkbox">tag 5</input>
               <input class="tag" type="checkbox">tag 6</input><br>
               <button id="post" >submit</button>
-          </form>
+            </form>
           </div>
-        </div>
-      </div>
+    </div>
     </div>
   </body>
 </html>

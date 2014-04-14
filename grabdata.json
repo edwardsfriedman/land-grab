@@ -1,7 +1,7 @@
-[{ name: "Stop African Land Grab",
+data = [{ name: "Stop African Land Grab",
    location: "New York City, NY, USA",
    url: "http://www.stopafricalandgrab.com/",
-   description: "Stop Africa Land Grab is an international grassroots effort started by Dr. Emeka Akaezuwa, dedicated to rolling back the existential threat posed to all Africans by the theft of land under the guise of foreign investment. Our objectives are to Stop and rollback Land Grab and to encourage genuine foreign investments, ones that are just and mutually beneficial.",
+   desc: "Stop Africa Land Grab is an international grassroots effort started by Dr. Emeka Akaezuwa, dedicated to rolling back the existential threat posed to all Africans by the theft of land under the guise of foreign investment. Our objectives are to Stop and rollback Land Grab and to encourage genuine foreign investments, ones that are just and mutually beneficial.",
    locationsActive: ["Congo", "Eritrea", "Ethiopia", "Kenya", "Liberia", "Madagascar", "Mali", "Mauritania", "Mozambique", "Nigeria", "Sierra Leone", "South Sudan", "Sudan", "Tanzania", "Uganda"],
    grabbers: ["Goldman Sachs", "JP Morgan", "London-based Emergent that works to attract speculators", "various universities", "Harvard University", "Spellman College", "Vanderbilt University", "New Forests Company – UK", "Kinyeti Development LLC", "Howard Eugene Douglas (a former United States Ambassador at Large and Coordinator for Refugee Affairs - now deceased)", "Bruce Rastetter", "Petrotech-ffn USA", "Swedish and German firms have interests in the production of biofuels in Tanzania", "Addax Bioenergy from Switzerland", "Quifel International Holdings (QIH) from Portugal are major investors in Sierra Leone", "UK based Crad-1 (CAPARO Renewable Agriculture Developments Ltd.) (associated with the Tony Blair Africa)", "governments of China, India, Netherlands, and Saudi Arabia"],
    resistance: ["petition", "education"]},
@@ -19,7 +19,7 @@
    url: "http://media.oaklandinstitute.org/special-investigation-understanding-land-investment-deals-africa",
    desc: "Hedge funds and other foreign speculators are increasing price volatility and supply insecurity in the global food system, according to a series of investigative reports released today by the Oakland Institute. The reports are based on the actual materials from these land deals and include investigation of investors, purchase contracts, business plans and maps never released before now. The “Understanding Land Investment Deals in Africa” reports also reveal that these largely unregulated land purchases are resulting in virtually none of the promised benefits for native populations, but instead are forcing millions of small farmers off ancestral lands and small, local food farms in order to make room for export commodities, including biofuels and cut flowers.",
    locationsActive:  ["Ethiopia", "Mali", "Sierra Leone", "Mozambique", "Tanzania", "South Sudan"],
-   grabbers: ["AgriSol Energy LLC", "Emergent Asset Management", "Nile Trading & Development", "Quifel Natural Holdings", "World Bank Group"],
+   grabbers: ["AgriSol Energy LLC", "Emergent Asset Management", "Nile Trading and Development", "Quifel Natural Holdings", "World Bank Group"],
    resistance: ["research/scholarship"]},
 
  { name:"Unified Campesino Movement of the Aguan",

@@ -7,12 +7,92 @@ window.addEventListener('load', function(){
       minZoom: 2,
       maxBounds: bounds
   });
-  map.zoomControl.setPosition('bottomleft');
-
+  map.zoomControl.setPosition('topright');
+  //map.dragging.disable();
+  //map.touchZoom.disable();
+  //map.doubleClickZoom.disable();
+  map.scrollWheelZoom.disable();
+  /****** Load DATA ******/
+  names = [];
+  locations = [];
+  grabbers = [];
+  resistance = [];
+  var mydata = data;
+  var datalen = mydata.length
+  var i;
+  var grabsublen;
+  var resistsublen;
+  var j;
+  for (i=0; i<datalen; i++){
+      //grab names
+      if ($.inArray(mydata[i].name, names) == -1){
+        names.push(mydata[i].name);
+      }
+      //grab locations
+      if ($.inArray(mydata[i].location, locations) == -1){
+        locations.push(mydata[i].location);
+      }
+      //grab offenders
+      if (mydata[i].grabbers){
+        grabsublen = mydata[i].grabbers.length;
+        for (j=0; j<grabsublen; j++){
+          if ($.inArray(mydata[i].grabbers[j], grabbers) == -1){
+            grabbers.push(mydata[i].grabbers[j]);
+          }
+        }
+      }
+      //grab resistance
+      if (mydata[i].resistance){
+        resistsublen = mydata[i].resistance.length;
+        for (j=0; j<resistsublen; j++){
+          if ($.inArray(mydata[i].resistance[j], resistance) == -1){
+            resistance.push(mydata[i].resistance[j]);
+          }
+        }
+      }
+  }
+  populateDrops();
   /****** SEARCH BOX *******/
   document.getElementById('actionBox').style.display = "none";
 }, false);
 
+function populateDrops(){
+  var nameDrop = document.getElementById("nameDrop").children[2];
+  var locDrop = document.getElementById("locDrop").children[2];
+  var grabDrop = document.getElementById("entitiesDrop").children[2];
+  var resistDrop = document.getElementById("resistanceDrop").children[2];
+  //Put data in list
+  var nameslen = names.length;
+  var loclen = locations.length;
+  var grablen = grabbers.length;
+  var resistlen = resistance.length;
+  var i;
+  for (i=0; i < nameslen; i++) {
+    option = document.createElement('option');
+    option.value = names[i];
+    option.innerHTML= names[i];
+    nameDrop.appendChild(option);
+  }
+  for (i=0; i < loclen; i++) {
+    option = document.createElement('option');
+    option.value = locations[i];
+    option.innerHTML = locations[i];
+    locDrop.appendChild(option);
+  }
+  for (i=0; i < grablen; i++) {
+    option = document.createElement('option');
+    option.value = grabbers[i];
+    option.innerHTML = grabbers[i];
+    grabDrop.appendChild(option);
+  }
+  for (i=0; i < resistlen; i++) {
+    option = document.createElement('option');
+    option.value = resistance[i];
+    option.innerHTML = resistance[i];
+    resistDrop.appendChild(option);
+  }
+
+}
 
 function srchButton(){
   var actionBox = document.getElementById('actionBox');
@@ -44,39 +124,59 @@ function srchButton(){
 };
 
 function shareButton(){
-  var actionBox = document.getElementById('actionBox');
-  var searchBox = document.getElementById('searchBox');
-  var searchBut = document.getElementById('search');
-  var shareBox = document.getElementById('shareBox');
-  var shareBut = document.getElementById('share');
-  if (actionBox.style.display === "none") { //if all hidden
-    shareBox.style.display = "block";
-    searchBox.style.display = "none";
-    $(actionBox).slideToggle();
-    shareBut.innerHTML = "hide";
-  } else {
-    if (shareBox.style.display === "none") { //if search is up
+    var actionBox = document.getElementById('actionBox');
+    var searchBox = document.getElementById('searchBox');
+    var searchBut = document.getElementById('search');
+    var shareBox = document.getElementById('shareBox');
+    var shareBut = document.getElementById('share');
+    if (actionBox.style.display === "none") { //if all hidden
+      shareBox.style.display = "block";
+      searchBox.style.display = "none";
+      $(actionBox).slideToggle();
+      shareBut.innerHTML = "hide";
+    } else {
+      if (shareBox.style.display === "none") { //if search is up
+          $(actionBox).slideToggle(100, function(){
+            shareBox.style.display = "block";
+            searchBox.style.display = "none";
+            shareBut.innerHTML = "hide";
+            searchBut.innerHTML = "search";
+            $(actionBox).slideToggle();
+          });
+      } else { //if share is already up
+        shareBut.innerHTML = "share";
         $(actionBox).slideToggle(100, function(){
-          shareBox.style.display = "block";
-          searchBox.style.display = "none";
-          shareBut.innerHTML = "hide";
-          searchBut.innerHTML = "search";
-          $(actionBox).slideToggle();
+          shareBox.style.display = "none";
         });
-    } else { //if share is already up
-      shareBut.innerHTML = "share";
-      $(actionBox).slideToggle(100, function(){
-        shareBox.style.display = "none";
-      });
+      }
     }
+}
+
+function assignData(parentId){
+  var data;
+  switch(parentId){
+  case "nameDrop":
+      data = names;
+      break;
+  case "locDrop":
+      data = locations;
+      break;
+  case "entitiesDrop":
+      data = grabbers;
+      break;
+  case "resistanceDrop":
+      data = resistance;
+      break;
   }
+  return data;
 }
 
 function addDrop(buttonId, parentId, dataPointer, max) {
     var thisButton = document.getElementById(buttonId);
     var removeButton;
     var parentDiv = document.getElementById(parentId);
-    var data = ["a","b","c"];//TODO: get data here
+    var data = assignData(parentId);
+
     var dataLen = data.length;
     var selector = document.createElement('select');
     var i;
@@ -134,42 +234,83 @@ function countSelectors(parent, max){
  *  for a search.
  */
 function doSearch() {
-    console.log("hit search!");
-
-
-
-
-
-
-
-    /**var url = document.URL + "/search.json";
-    var cb = function(mensaje){
-        //TODO: callback here
+    var resultCont = document.getElementById("resultsContain");
+    var dataLen = data.length;
+    var i;
+    var div;
+    var nameCrit = document.getElementById("nameDrop").children[2].value;
+    var locationCrit = document.getElementById("locDrop").children[2].value
+    var grabCrit = document.getElementById("entitiesDrop").children[2].value
+    var resistCrit = document.getElementById("resistanceDrop").children[2].value
+    var name;
+    var loc;
+    var grabs;
+    var resists;
+    var url;
+    var descrip;
+    resultCont.innerHTML = "";
+    for (i=0; i<dataLen; i++){
+      name = data[i].name;
+      loc = data[i].location;
+      if (data[i].grabbers){
+        grabs = data[i].grabbers;
+      }
+      resists = data[i].resistance;
+      url = data[i].url;
+      descrip = data[i].desc;
+      //include?
+      if (name === nameCrit || loc === locationCrit || $.inArray(resistCrit,resists) > -1){
+        div = document.createElement('div');
+        div.className= "result";
+        div.innerHTML = buildResult(url, name, descrip, grabs, resists);
+        resultCont.appendChild(div);
+      } else if (grabbers) {
+        if ($.inArray(grabCrit, grabs) > -1){
+          div = document.createElement('div');
+          div.className= "result";
+          div.innerHTML = buildResult(url, name, descrip, grabs, resists);
+          resultCont.appendChild(div);
+        }
+      }
     }
-    request(url, cb, chatWindow);**/
+    if (resultCont.innerHTML===""){
+      resultCont.innerHTML = "No Results Matched Your Search"
+    }
+    if(resultCont.style.display === "none" || resultCont.style.display ===""){
+      $(resultsContain).slideToggle();
+    }
 }
-/**
-// prevent the page from redirecting
-    e.preventDefault();
 
-    //message components
-    var name = document.getElementById('nicknameField').value;
-    var message = document.getElementById('messageField').value;
+function buildResult(url, name, descrip, grabs, resists){
+  var grabberString;
+  var grablen;
+  var resString
+  var reslen;
+  var j;
+  var inner;
+  if (grabs){
+    grablen = grabs.length;
+    grabberString = "";
+    for (j=0; j<grablen; j++){
+      grabberString += grabs[j];
+      grabberString += ", ";
+    }
+  }
+  //resitance string
+  reslen = resists.length;
+  resString = "";
+  for (j=0; j<reslen; j++){
+    resString += resists[j];
+    resString += ", ";
+  }
+  inner = "<a href='"+ url +"'><h3>" + name + "</h3></a>" +
+  "<p><span class='under'>Description:</span> " + descrip + "</p>" +
+  "<p><span class='under'>Culpable governments, companies & individuals:</span> " + grabberString + "</p>" +
+  "<p><span class='under'>Forms of resistance:</span> " + resString + "</p>";
+  return inner;
+}
 
-    // create a FormData object from our form
-    var fd = new FormData()
-    fd.append('nickname', name);
-    fd.append('message', message);
-    document.getElementById('messageField').value = "";
 
-    // send it to the server
-    var req = new XMLHttpRequest();
-    req.open('POST', '/' + meta('roomName') + '/messages', true);
-    req.send(fd);**/
-
-/** Request function for querying server.
- *
- */
 function request(url, callback, container) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -191,4 +332,8 @@ function request(url, callback, container) {
     }, false);
 
     request.send(null);
+}
+
+function hideresults(){
+  $(resultsContain).slideToggle();
 }

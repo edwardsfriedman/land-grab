@@ -5,7 +5,7 @@ body {
 }
 
 #map {
-    /*position: absolute;*/
+    position: absolute;
     width: 100%;
     height: 100%;
     margin: 0px;
@@ -24,6 +24,7 @@ body {
     color: white;
     background-color: black;
     font-family: Monaco, Consolas, "Lucida Console", monospace;
+    font-size: 12px;
     float: left;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -31,6 +32,38 @@ body {
     opacity: .8;
     margin: 1px;
     padding: 8px;
+}
+
+#resultsContain {
+    float: left;
+    clear: left;
+    position: fixed;
+    z-index: 101;
+    width: 545px;
+    height: auto;
+    max-height: 525px;
+    top:113px;
+    left:15px;
+    display: none;
+    overflow-y: scroll;
+    border: 1px solid white;
+}
+
+.result {
+  border: 1px solid white;
+  margin: 8px;
+  padding: 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.result a {
+  color: white;
+}
+
+.under {
+  text-decoration: underline;
 }
 
 #title {
