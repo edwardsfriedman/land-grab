@@ -7,19 +7,23 @@ app.engine('html', engines.hogan);
 app.set('views', __dirname + '/public');
 app.use(express.bodyParser());
 
-var collections, db;
-var dbUrl = "test";
+
+// our database is named "landGrab", the collection we store everything in is named mapPoints
+var collection, db;
+var dbUrl = "landGrab";
+var collectionName = "mapPoints";
+
 var mongoClient = new MongoClient(new Server('localhost', 27017));
-mongoClient.connect("mongodb://localhost:27017/test", function(err, database) {
+mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database) {
     if(!err) {
         console.log("We are connected");
-		db = mongoClient.db("test");
-		db.collections(function(err,collecs){
+		db = database;
+		db.collection(collectionName,function(err,collec){
 			if(err){
 				console.log("error fetching collections");
 			} else {
 				console.log("success");
-				collections = collecs;
+				collection = collec;
 			}
 		});
     } else {
@@ -31,8 +35,8 @@ mongoClient.connect("mongodb://localhost:27017/test", function(err, database) {
 app.get('/', function(request, response){
 	console.log("homepage");
 	response.render('homepage.html');
-	console.log("database " + db);
-	console.log(collections[0]);
+	console.log(db);
+	console.log(collection);
 });
 
 app.get('/testInsert', function(request, response){
@@ -42,13 +46,14 @@ app.get('/testInsert', function(request, response){
 
 app.get('/testFetchAll', function(request, response){
 	console.log("fetchAll page hit");
-	db.entries.find(function(err, entries){
-		if(err || !entries) {
+	collection.find().toArray(function(err,entries){
+		if(err || entries.length == 0) {
 			console.log("error or no results found");
 		} else {
 			entries.forEach(function(entry){
 				console.log(entry);
 			});
+			console.log("finished loop");
 		}
 	});
 });
