@@ -94,6 +94,22 @@ app.post('/superSecretUrl69', function(request, response){
 	var query = ""
 });
 
+app.get('/populateMap.json',function(request, response){
+	collection.find().toArray(function(err,entries){
+		if(err || entries.length == 0) {
+			console.log("error or no results found");
+		} else {
+			response.send(entries);
+			/*
+			entries.forEach(function(entry){
+				console.log(entry);
+			});
+			console.log("finished loop");
+			*/
+		}
+	});
+});
+
 var server = app.listen(8081, function(){
 	console.log('Listening on port %d', server.address().port);
 });
