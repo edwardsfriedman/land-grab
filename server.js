@@ -35,7 +35,7 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
 app.get('/', function(request, response){
 	console.log("homepage");
 	response.render('homepage.html');
-	console.log("database " + db);
+	//console.log("database " + db);
 	console.log(collection);
 });
 
