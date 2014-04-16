@@ -31,15 +31,27 @@ mongoClient.connect("mongodb://localhost:27017/test", function(err, database) {
 app.get('/', function(request, response){
 	console.log("homepage");
 	response.render('homepage.html');
-	console.log("database " + db);
-	console.log(collections[0]);
+	//console.log("database " + db);
+	//console.log(collections[0]);
 });
 
+app.post('/testInsert', function(request, response){
+    // insert everything to the database
+
+    /*var q = conn.query('INSERT INTO chatroom VALUES(NULL, $1, $2, $3, $4)', [request.params.roomName, request.body.name, request.body.msg, new Date()]);
+        time = time+1;
+        q.on('row', function(row){});
+        q.on('end', function(){});    
+    */
+    console.log("POST RECIEVED:", request.body.name, request.body.location, request.body.description);
+    response.redirect('/');
+});
+/*
 app.get('/testInsert', function(request, response){
 	console.log("insert page hit");
 	console.log(collections[0]);
 })
-
+*/
 app.get('/testFetchAll', function(request, response){
 	console.log("fetchAll page hit");
 	db.entries.find(function(err, entries){
