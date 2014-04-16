@@ -1,0 +1,9 @@
+To import a JSON file into the DB, use:
+    $ mongoimport --jsonArray --db landGrab --collection mapPoints --file grabdata.json
+To print all the contents of the DB:
+    $ mongo
+        > use landGrab
+        > db.mapPoints.find()
+To tell mongod to use a specific directory:
+    $ mongod --dbpath <dir>
+
