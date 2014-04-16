@@ -35,20 +35,29 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
 app.get('/', function(request, response){
 	console.log("homepage");
 	response.render('homepage.html');
-	//console.log("database " + db);
-	//console.log(collections[0]);
+	console.log("database " + db);
+	console.log(collection);
 });
 
 app.post('/testInsert', function(request, response){
     // insert everything to the database
 
-    /*var q = conn.query('INSERT INTO chatroom VALUES(NULL, $1, $2, $3, $4)', [request.params.roomName, request.body.name, request.body.msg, new Date()]);
-        time = time+1;
-        q.on('row', function(row){});
-        q.on('end', function(){});    
-    */
     console.log("POST RECIEVED:", request.body.name, request.body.location, request.body.description);
+
+    collection.insert({name:request.body.name, 
+                       location:request.body.location, 
+                       url:request.body.url,
+                       desc:request.body.desc,
+                       locationsActive:request.body.locationsActive,
+                       grabbers:request.body.grabbers,
+                       resistance:request.body.resistance
+                      }, function() { 
+                          console.log("SUCCESFULLY INSERTED");
+                      });
+
     response.redirect('/');
+
+
 });
 /*
 app.get('/testInsert', function(request, response){
