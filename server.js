@@ -5,6 +5,8 @@ var Server = require('mongodb').Server;
 var engines = require('consolidate');
 app.engine('html', engines.hogan);
 app.set('views', __dirname + '/public');
+app.use('/public', express.static(__dirname + '/public'));
+
 app.use(express.bodyParser());
 
 
@@ -70,14 +72,14 @@ app.post('/testInsert', function(request, response){
 
     console.log("POST RECIEVED:", request.body.name, request.body.location, request.body.description);
 
-    collection.insert({name:request.body.name, 
-                       location:request.body.location, 
+    collection.insert({name:request.body.name,
+                       location:request.body.location,
                        url:request.body.url,
                        desc:request.body.desc,
                        locationsActive:request.body.locationsActive,
                        grabbers:request.body.grabbers,
                        resistance:request.body.resistance
-                      }, function() { 
+                      }, function() {
                           console.log("SUCCESFULLY INSERTED");
                       });
 
