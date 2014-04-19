@@ -1,0 +1,11 @@
+{
+	"name": "Land-Grab",
+	"description": "App for researching and sharing information on land grabs globally.",
+	"version": "0.0.1",
+	"dependencies": {
+		"express": "3.0.x",
+		"hogan.js": "2.0.x",
+		"consolidate": "0.7.x",
+    "mongodb": "1.4.0"
+	}
+}
