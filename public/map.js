@@ -235,14 +235,14 @@ function doSearch() {
     //var dataLen = data.length;
     //var i;
     //var div;
-    var name1, name2, name3,
-        location1, location2, location3,
-        grabbers1, grabbers2, grabbers3,
-        resistance1, resistance2, resistance3;
-    name1 = document.getElementById("nameDrop").children[2].value;
-    location1 = document.getElementById("locDrop").children[2].value
-    grabbers1 = document.getElementById("entitiesDrop").children[2].value
-    resistance1 = document.getElementById("resistanceDrop").children[2].value
+    var name = []; //name1, name2, name2
+    var location = [];//location1, location2, location3,
+    var grabbers = [];    //grabbers1, grabbers2, grabbers3,
+    var resistance = [];    //resistance1, resistance2, resistance3;
+    name.push(document.getElementById("nameDrop").children[2].value);
+    location.push(document.getElementById("locDrop").children[2].value);
+    grabbers.push(document.getElementById("entitiesDrop").children[2].value);
+    resistance.push(document.getElementById("resistanceDrop").children[2].value);
     /**var name;
     var loc;
     var grabs;
@@ -298,7 +298,11 @@ function doSearch() {
 
     }
     var fd = new FormData();
-    fd.append('name1', name1);
+    buildForm(name, "name", fd);
+    buildForm(location, "location", fd);
+    buildForm(grabbers, "grabbers", fd);
+    buildForm(resistance, "resistance", fd);
+    /**fd.append('name1', name1);
     fd.append('name2', name2);
     fd.append('name3', name3);
     fd.append('location1', location1);
@@ -309,7 +313,7 @@ function doSearch() {
     fd.append('grabbers3', grabbers3);
     fd.append('resistance1', resistance1);
     fd.append('resistance2', resistance2);
-    fd.append('resistance3', resistance3);
+    fd.append('resistance3', resistance3);**/
     // send it to the server
     var req = new XMLHttpRequest();
     req.open('POST', '/search.json', true);
@@ -330,6 +334,16 @@ function doSearch() {
         }
     }, false);
     req.send(fd);
+}
+
+function buildForm(selections, criteria, form){
+  var selectlen = selections.length;
+  var i, datum, tag;
+  for (i=0; i<selectlen; i++){
+      tag = criteria + String(i+1);
+      form.append(tag, selections[i]);
+  }
+  return form;
 }
 
 function buildResult(url, name, descrip, grabs, resists){
