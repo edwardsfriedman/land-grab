@@ -34,9 +34,35 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
 
 app.get('/', function(request, response){
 	console.log("homepage");
-	response.render('homepage.html');
-	//console.log("database " + db);
-	//console.log(collection);
+	response.render('map.html');
+});
+
+app.get('/search.json', function(request, response){
+	//search
+	console.log("SEARCH RECIEVED:", request.body.name, request.body.location, request.body.description);
+
+	var name1 = request.body.name1;
+	var name2 = request.body.name2;
+	var name3 = request.body.name3;
+	var location1 = request.body.location1;
+	var location2 = request.body.location2;
+	var location3 = request.body.location3;
+	var grabbers1 = request.body.grabbers1;
+	var grabbers2 = request.body.grabbers2;
+	var grabbers3 = request.body.grabbers3;
+	var typeOfResistance1 = request.body.typeOfResistance1;
+	var typeOfResistance2 = request.body.typeOfResistance2;
+	var typeOfResistance3 = request.body.typeOfResistance3;
+
+	var query = TODO;
+
+	collection.find(query).toArray(function(err,entries){
+		if(err || entries.length == 0) {
+			console.log("error or no results found");
+		} else {
+			response.send(entries);
+		}
+	});
 });
 
 app.post('/testInsert', function(request, response){
@@ -56,8 +82,6 @@ app.post('/testInsert', function(request, response){
                       });
 
     response.redirect('/');
-
-
 });
 
 
