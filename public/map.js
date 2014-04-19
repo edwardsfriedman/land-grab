@@ -239,6 +239,10 @@ function doSearch() {
     var location = [];//location1, location2, location3,
     var grabbers = [];    //grabbers1, grabbers2, grabbers3,
     var resistance = [];    //resistance1, resistance2, resistance3;
+    var names = document.getElementById("nameDrop");
+    var locations = document.getElementById("locDrop");
+    var grabberz = document.getElementById("entititesDrop");
+    var resitances = document.getElementById("resistanceDrops");
     name.push(document.getElementById("nameDrop").children[2].value);
     location.push(document.getElementById("locDrop").children[2].value);
     grabbers.push(document.getElementById("entitiesDrop").children[2].value);
