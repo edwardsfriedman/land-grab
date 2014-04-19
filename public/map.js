@@ -297,7 +297,7 @@ function doSearch() {
       }**/
 
     }
-    var fd = new FormData()
+    var fd = new FormData();
     fd.append('name1', name1);
     fd.append('name2', name2);
     fd.append('name3', name3);
@@ -313,7 +313,6 @@ function doSearch() {
     // send it to the server
     var req = new XMLHttpRequest();
     req.open('GET', '/search.json', true);
-    req.send(fd);
     req.addEventListener('load', function(e){
         if (request.status == 200) {
             /**container.innerHTML = "";
@@ -330,6 +329,7 @@ function doSearch() {
             console.log(request.status);
         }
     }, false);
+    req.send(fd);
 }
 
 function buildResult(url, name, descrip, grabs, resists){
