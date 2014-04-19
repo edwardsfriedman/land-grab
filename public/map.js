@@ -8,9 +8,6 @@ window.addEventListener('load', function(){
       maxBounds: bounds
   });
   map.zoomControl.setPosition('topright');
-  //map.dragging.disable();
-  //map.touchZoom.disable();
-  //map.doubleClickZoom.disable();
   map.scrollWheelZoom.disable();
   /****** Load DATA ******/
   names = [];
@@ -234,15 +231,19 @@ function countSelectors(parent, max){
  *  for a search.
  */
 function doSearch() {
-    var resultCont = document.getElementById("resultsContain");
-    var dataLen = data.length;
-    var i;
-    var div;
-    var nameCrit = document.getElementById("nameDrop").children[2].value;
-    var locationCrit = document.getElementById("locDrop").children[2].value
-    var grabCrit = document.getElementById("entitiesDrop").children[2].value
-    var resistCrit = document.getElementById("resistanceDrop").children[2].value
-    var name;
+    //var resultCont = document.getElementById("resultsContain");
+    //var dataLen = data.length;
+    //var i;
+    //var div;
+    var name1, name2, name3,
+        location1, location2, location3,
+        grabbers1, grabbers2, grabbers3,
+        resistance1, resistance2, resistance3;
+    name1 = document.getElementById("nameDrop").children[2].value;
+    location1 = document.getElementById("locDrop").children[2].value
+    grabbers1 = document.getElementById("entitiesDrop").children[2].value
+    resistance1 = document.getElementById("resistanceDrop").children[2].value
+    /**var name;
     var loc;
     var grabs;
     var resists;
@@ -278,7 +279,57 @@ function doSearch() {
     }
     if(resultCont.style.display === "none" || resultCont.style.display ===""){
       $(resultsContain).slideToggle();
+    }**/
+
+    var url = document.URL + "/search.json";
+    var cb = function(data){
+      console.log("it's here: " + data);
+      /**var datalen = data.length;
+      var i;
+      var datum;
+      for (i=0; i< datalen; i++){
+        datum = data[i];
+        div = document.createElement('div');
+        div.className= "result";
+        div.innerHTML = buildResult(url, name, descrip, grabs, resists);
+        resultCont.appendChild(div);
+        buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance);
+      }**/
+
     }
+    var fd = new FormData()
+    fd.append('name1', name1);
+    fd.append('name2', name2);
+    fd.append('name3', name3);
+    fd.append('location1', location1);
+    fd.append('location2', location2);
+    fd.append('location3', location3);
+    fd.append('grabbers1', grabbers1);
+    fd.append('grabbers2', grabbers2);
+    fd.append('grabbers3', grabbers3);
+    fd.append('resistance1', resistance1);
+    fd.append('resistance2', resistance2);
+    fd.append('resistance3', resistance3);
+    // send it to the server
+    var req = new XMLHttpRequest();
+    req.open('GET', '/search.json', true);
+    req.send(fd);
+    req.addEventListener('load', function(e){
+        if (request.status == 200) {
+            /**container.innerHTML = "";
+            var content = request.responseText;
+            var data = JSON.parse(content)
+            var i;
+            var dataLen = data.length;
+            for (i=0; i < dataLen; i++){
+                callback(data[i]);
+            }
+            scrollBottom();**/
+            cb(data);
+        } else {
+            console.log(request.status);
+        }
+    }, false);
 }
 
 function buildResult(url, name, descrip, grabs, resists){
@@ -317,7 +368,7 @@ function request(url, callback, container) {
 
     request.addEventListener('load', function(e){
         if (request.status == 200) {
-            container.innerHTML = "";
+            /**container.innerHTML = "";
             var content = request.responseText;
             var data = JSON.parse(content)
             var i;
@@ -325,7 +376,8 @@ function request(url, callback, container) {
             for (i=0; i < dataLen; i++){
                 callback(data[i]);
             }
-            scrollBottom();
+            scrollBottom();**/
+            callback(data);
         } else {
             console.log(request.status);
         }
