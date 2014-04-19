@@ -41,49 +41,45 @@ app.get('/', function(request, response){
 
 app.post('/search.json', function(request, response){
 	//search
-	console.log("SEARCH RECIEVED:", request);
+	console.log("SEARCH RECIEVED:");
 
 	var names = [request.body.name1, request.body.name2, request.body.name3];
 	var locations = [request.body.location1,request.body.location2,request.body.location3];
 	var grabbers = [request.body.grabbers1,request.body.grabbers2,request.body.grabbers3];
 	var typesOfResistance = [request.body.typeOfResistance1,request.body.typeOfResistance2,request.body.typeOfResistance3];
 
-	var nameQuery = "{name : { $in: [ ";
+	var nameQuery = [];
 	for(name in names){
 		if(names[name]){
-			nameQuery+="'" + names[name] + "',";
+			nameQuery.push(names[name]);
 		};
 	};
-	nameQuery+="] } }";
 
-	var locQuery = "{location : { $in: [ ";
+	var locQuery = [];
 	for(loc in locations){
 		if(locations[loc]){
-			locQuery+="'" + locations[loc] + "',";
+			locQuery.push(locations[loc]);
 		};
 	};
-	locQuery+="] } }";
 
-	var grabbersQuery = "{grabbers : { $in: [ ";
+
+	var grabbersQuery = [];
 	for(grab in grabbers){
 		if(grabbers[grab]){
-			grabbersQuery+="'" + grabbers[grab] + "'";
+			grabbersQuery.push(grabbers[grab]);
 		};
 	};
-	grabbersQuery+="] } }";
 
-	var resTypeQuery = "{resistance : { $in: [ ";
+	var resTypeQuery = [];
 	for(resType in typesOfResistance){
 		if(typesOfResistance[resType]){
-			resTypeQuery+="'" + typesOfResistance[resType] + "'";
+			resTypeQuery.push(typesOfResistance[resType]);
 		};
 	};
-	resTypeQuery+="] } }";
+	var query = { $or: [ {name : { $in: nameQuery } },{location : { $in: locQuery } },{grabbers : { $in: grabbersQuery } },{resistance : { $in: resTypeQuery } } ] };	
 
-	var query = { $or: [ {name : { $in: [ 'Stop African Land Grab',] } },{location : { $in: [ ] } },{grabbers : { $in: [ ] } },{resistance : { $in: [ ] } } ] };
-	//var query = "{ $or: [ " + nameQuery + "," + locQuery + "," + grabbersQuery + "," + resTypeQuery + " ] }";
-
-	console.log("About to execute the following query: " + query);
+	console.log("About to execute the following query: ");
+	console.log(query.toJSON);
 
 	collection.find(query).toArray(function(err,entries){
 		if(err){
