@@ -48,46 +48,52 @@ app.post('/search.json', function(request, response){
 	var grabbers = [request.body.grabbers1,request.body.grabbers2,request.body.grabbers3];
 	var typesOfResistance = [request.body.typeOfResistance1,request.body.typeOfResistance2,request.body.typeOfResistance3];
 
-	var nameQuery = "{name : { $in: [ '";
+	var nameQuery = "{name : { $in: [ ";
 	for(name in names){
 		if(names[name]){
-			nameQuery+=names[name];
+			nameQuery+="'" + names[name] + "',";
 		};
 	};
 	nameQuery+="] } }";
 
-	var locQuery = "{location : { $in: [ '";
+	var locQuery = "{location : { $in: [ ";
 	for(loc in locations){
 		if(locations[loc]){
-			locQuery+=locations[loc];
+			locQuery+="'" + locations[loc] + "',";
 		};
 	};
 	locQuery+="] } }";
 
-	var grabbersQuery = "{grabbers : { $in: [ '";
+	var grabbersQuery = "{grabbers : { $in: [ ";
 	for(grab in grabbers){
 		if(grabbers[grab]){
-			grabbersQuery+=grabbers[grab];
+			grabbersQuery+="'" + grabbers[grab] + "'";
 		};
 	};
 	grabbersQuery+="] } }";
 
-	var resTypeQuery = "{resistance : { $in: [ '";
+	var resTypeQuery = "{resistance : { $in: [ ";
 	for(resType in typesOfResistance){
 		if(typesOfResistance[resType]){
-			resTypeQuery+=typesOfResistance[resType];
+			resTypeQuery+="'" + typesOfResistance[resType] + "'";
 		};
 	};
 	resTypeQuery+="] } }";
 
-	var query = "{ $or: [ " + nameQuery + "," + locQuery + "," + grabbersQuery + "," + resTypeQuery + " ] }";
+	var query = { $or: [ {name : { $in: [ 'Stop African Land Grab',] } },{location : { $in: [ ] } },{grabbers : { $in: [ ] } },{resistance : { $in: [ ] } } ] };
+	//var query = "{ $or: [ " + nameQuery + "," + locQuery + "," + grabbersQuery + "," + resTypeQuery + " ] }";
 
 	console.log("About to execute the following query: " + query);
 
 	collection.find(query).toArray(function(err,entries){
-		if(err || entries.length == 0) {
-			console.log("error or no results found");
+		if(err){
+			console.log("error: ");
+			console.log(err);
+		} else if(entries.length == 0) {
+			console.log("no results found");
 		} else {
+			console.log("Results:");
+			console.log(entries);
 			response.send(entries);
 		}
 	});
@@ -97,6 +103,8 @@ app.post('/testInsert', function(request, response){
     // insert everything to the database
 
     console.log("POST RECIEVED:", request.body.name, request.body.location, request.body.description);
+
+    console.log(request.body.dsdsd == undefined);
 
     collection.insert({name:request.body.name,
                        location:request.body.location,
