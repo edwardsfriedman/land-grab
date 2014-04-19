@@ -312,7 +312,7 @@ function doSearch() {
     fd.append('resistance3', resistance3);
     // send it to the server
     var req = new XMLHttpRequest();
-    req.open('GET', '/search.json', true);
+    req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
         if (request.status == 200) {
             /**container.innerHTML = "";

@@ -39,7 +39,7 @@ app.get('/', function(request, response){
 	response.render('map.html');
 });
 
-app.get('/search.json', function(request, response){
+app.post('/search.json', function(request, response){
 	//search
 	console.log("SEARCH RECIEVED:", request);
 
@@ -81,7 +81,7 @@ app.get('/search.json', function(request, response){
 	resTypeQuery+="] } }";
 
 	var query = "{ $or: [ " + nameQuery + "," + locQuery + "," + grabbersQuery + "," + resTypeQuery + " ] }";
-	
+
 	console.log("About to execute the following query: " + query);
 
 	collection.find(query).toArray(function(err,entries){
