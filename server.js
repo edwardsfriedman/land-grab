@@ -41,22 +41,48 @@ app.get('/', function(request, response){
 
 app.get('/search.json', function(request, response){
 	//search
-	console.log("SEARCH RECIEVED:", request.body.name, request.body.location, request.body.description);
+	console.log("SEARCH RECIEVED:", request);
 
-	var name1 = request.body.name1;
-	var name2 = request.body.name2;
-	var name3 = request.body.name3;
-	var location1 = request.body.location1;
-	var location2 = request.body.location2;
-	var location3 = request.body.location3;
-	var grabbers1 = request.body.grabbers1;
-	var grabbers2 = request.body.grabbers2;
-	var grabbers3 = request.body.grabbers3;
-	var typeOfResistance1 = request.body.typeOfResistance1;
-	var typeOfResistance2 = request.body.typeOfResistance2;
-	var typeOfResistance3 = request.body.typeOfResistance3;
+	var names = [request.body.name1, request.body.name2, request.body.name3];
+	var locations = [request.body.location1,request.body.location2,request.body.location3];
+	var grabbers = [request.body.grabbers1,request.body.grabbers2,request.body.grabbers3];
+	var typesOfResistance = [request.body.typeOfResistance1,request.body.typeOfResistance2,request.body.typeOfResistance3];
 
-	var query = TODO;
+	var nameQuery = "{name : { $in: [ '";
+	for(name in names){
+		if(names[name]){
+			nameQuery+=names[name];
+		};
+	};
+	nameQuery+="] } }";
+
+	var locQuery = "{location : { $in: [ '";
+	for(loc in locations){
+		if(locations[loc]){
+			locQuery+=locations[loc];
+		};
+	};
+	locQuery+="] } }";
+
+	var grabbersQuery = "{grabbers : { $in: [ '";
+	for(grab in grabbers){
+		if(grabbers[grab]){
+			grabbersQuery+=grabbers[grab];
+		};
+	};
+	grabbersQuery+="] } }";
+
+	var resTypeQuery = "{resistance : { $in: [ '";
+	for(resType in typesOfResistance){
+		if(typesOfResistance[resType]){
+			resTypeQuery+=typesOfResistance[resType];
+		};
+	};
+	resTypeQuery+="] } }";
+
+	var query = "{ $or: [ " + nameQuery + "," + locQuery + "," + grabbersQuery + "," + resTypeQuery + " ] }";
+	
+	console.log("About to execute the following query: " + query);
 
 	collection.find(query).toArray(function(err,entries){
 		if(err || entries.length == 0) {
