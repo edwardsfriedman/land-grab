@@ -36,7 +36,7 @@ app.get('/', function(request, response){
 	console.log("homepage");
 	response.render('homepage.html');
 	//console.log("database " + db);
-	console.log(collection);
+	//console.log(collection);
 });
 
 app.post('/testInsert', function(request, response){
@@ -59,40 +59,7 @@ app.post('/testInsert', function(request, response){
 
 
 });
-/*
-app.get('/testInsert', function(request, response){
-	console.log("insert page hit");
-	console.log(collections[0]);
-})
-*/
-app.get('/testFetchAll', function(request, response){
-	console.log("fetchAll page hit");
-	collection.find().toArray(function(err,entries){
-		if(err || entries.length == 0) {
-			console.log("error or no results found");
-		} else {
-			entries.forEach(function(entry){
-				console.log(entry);
-			});
-			console.log("finished loop");
-		}
-	});
-});
 
-app.post('/superSecretUrl69', function(request, response){
-	//post to db
-	var username = request.body.nickname;
-	var message = request.body.message;
-	var roomName = request.params.roomName;
-
-	var sql = "INSERT INTO messages (room, nickname, body, time) VALUES ($1,$2,$3,$4);";
-	var q = conn.query(sql,[roomName,username,message,new Date().getTime()]);
-	q.on('end', function(){
-		response.redirect('/' + request.params.roomName);
-	});
-
-	var query = ""
-});
 
 app.get('/populateMap.json',function(request, response){
 	collection.find().toArray(function(err,entries){
@@ -100,12 +67,6 @@ app.get('/populateMap.json',function(request, response){
 			console.log("error or no results found");
 		} else {
 			response.send(entries);
-			/*
-			entries.forEach(function(entry){
-				console.log(entry);
-			});
-			console.log("finished loop");
-			*/
 		}
 	});
 });
