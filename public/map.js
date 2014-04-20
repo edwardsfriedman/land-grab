@@ -227,27 +227,50 @@ function countSelectors(parent, max){
     }
 }
 
-/** Wrapper for JSON request to the server to get results
- *  for a search.
+function collectSelections(id) {
+    var i;
+    var selections = [];
+    var children = document.getElementById(id).children;
+    var chillen = children.length;
+    var child;
+    for (i=0; i<chillen; i++){
+        child = children[i];
+        if (child.tagName === "SELECT"){
+            selections.push(child.value);
+        }
+    }
+    return selections;
+}
+
+
+/** Collects user search selections and submites JSON request
+ *to the server to get results.
  */
 function doSearch() {
-    //var resultCont = document.getElementById("resultsContain");
+    var resultCont = document.getElementById("resultsContain");
     //var dataLen = data.length;
     //var i;
-    //var div;
-    var name = []; //name1, name2, name2
+    var name = collectSelections("nameDrop");
+    var location = collectSelections("locDrop");
+    var grabbers = collectSelections("entitiesDrop");
+    var resistance = collectSelections("resistanceDrop");
+    //var names = document.getElementById("nameDrop");
+    /**var nameslen = names.children.length;
     var location = [];//location1, location2, location3,
-    var grabbers = [];    //grabbers1, grabbers2, grabbers3,
-    var resistance = [];    //resistance1, resistance2, resistance3;
-    var names = document.getElementById("nameDrop");
     var locations = document.getElementById("locDrop");
+    var locationslen = locations.children.length;
+    var grabbers = [];    //grabbers1, grabbers2, grabbers3,
     var grabberz = document.getElementById("entititesDrop");
-    var resitances = document.getElementById("resistanceDrops");
+    var grabberlen = locations.children.length;
+    var resistance = [];    //resistance1, resistance2, resistance3;
+    var resitances = document.getElementById("resistanceDrops");**/
+
+    /**
     name.push(document.getElementById("nameDrop").children[2].value);
     location.push(document.getElementById("locDrop").children[2].value);
     grabbers.push(document.getElementById("entitiesDrop").children[2].value);
     resistance.push(document.getElementById("resistanceDrop").children[2].value);
-    /**var name;
+    var name;
     var loc;
     var grabs;
     var resists;
@@ -278,27 +301,21 @@ function doSearch() {
         }
       }
     }
-    if (resultCont.innerHTML===""){
-      resultCont.innerHTML = "No Results Matched Your Search"
-    }
-    if(resultCont.style.display === "none" || resultCont.style.display ===""){
-      $(resultsContain).slideToggle();
-    }**/
+    **/
 
     var url = document.URL + "/search.json";
     var cb = function(data){
       console.log("it's here: " + data);
-      /**var datalen = data.length;
+      var datalen = data.length;
       var i;
       var datum;
       for (i=0; i< datalen; i++){
         datum = data[i];
         div = document.createElement('div');
         div.className= "result";
-        div.innerHTML = buildResult(url, name, descrip, grabs, resists);
+        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance);
         resultCont.appendChild(div);
-        buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance);
-      }**/
+      }
 
     }
     var fd = new FormData();
@@ -322,7 +339,6 @@ function doSearch() {
     var req = new XMLHttpRequest();
     req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
-        if (request.status == 200) {
             /**container.innerHTML = "";
             var content = request.responseText;
             var data = JSON.parse(content)
@@ -333,9 +349,12 @@ function doSearch() {
             }
             scrollBottom();**/
             cb(data);
-        } else {
-            console.log(request.status);
-        }
+            if (resultCont.innerHTML===""){
+              resultCont.innerHTML = "No Results Matched Your Search"
+            }
+            if(resultCont.style.display === "none" || resultCont.style.display ===""){
+              $(resultsContain).slideToggle();
+            }
     }, false);
     req.send(fd);
 }
