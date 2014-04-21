@@ -42,13 +42,14 @@ app.get('/', function(request, response){
 app.post('/search.json', function(request, response){
 	//search
 	console.log("SEARCH RECIEVED:");
-
+	console.log(JSON.stringify(request.body));
 	var names = [request.body.name1, request.body.name2, request.body.name3];
 	var locations = [request.body.location1,request.body.location2,request.body.location3];
 	var grabbers = [request.body.grabbers1,request.body.grabbers2,request.body.grabbers3];
-	var typesOfResistance = [request.body.typeOfResistance1,request.body.typeOfResistance2,request.body.typeOfResistance3];
+	var typesOfResistance = [request.body.resistance1,request.body.resistance2,request.body.resistance3];
 
 	var nameQuery = [];
+
 	for(name in names){
 		if(names[name]){
 			nameQuery.push(names[name]);
@@ -76,10 +77,12 @@ app.post('/search.json', function(request, response){
 			resTypeQuery.push(typesOfResistance[resType]);
 		};
 	};
+
 	var query = { $or: [ {name : { $in: nameQuery } },{location : { $in: locQuery } },{grabbers : { $in: grabbersQuery } },{resistance : { $in: resTypeQuery } } ] };	
 
 	console.log("About to execute the following query: ");
-	console.log(query.toJSON);
+	var queryString = JSON.stringify(query);
+	console.log(queryString);
 
 	collection.find(query).toArray(function(err,entries){
 		if(err){
