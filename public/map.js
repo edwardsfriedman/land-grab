@@ -14,7 +14,7 @@ window.addEventListener('load', function(){
   locations = [];
   grabbers = [];
   resistance = [];
-  var mydata = data;
+  var mydata = theta;
   var datalen = mydata.length
   var i;
   var grabsublen;
@@ -248,60 +248,10 @@ function collectSelections(id) {
  */
 function doSearch() {
     var resultCont = document.getElementById("resultsContain");
-    //var dataLen = data.length;
-    //var i;
     var name = collectSelections("nameDrop");
     var location = collectSelections("locDrop");
     var grabbers = collectSelections("entitiesDrop");
     var resistance = collectSelections("resistanceDrop");
-    //var names = document.getElementById("nameDrop");
-    /**var nameslen = names.children.length;
-    var location = [];//location1, location2, location3,
-    var locations = document.getElementById("locDrop");
-    var locationslen = locations.children.length;
-    var grabbers = [];    //grabbers1, grabbers2, grabbers3,
-    var grabberz = document.getElementById("entititesDrop");
-    var grabberlen = locations.children.length;
-    var resistance = [];    //resistance1, resistance2, resistance3;
-    var resitances = document.getElementById("resistanceDrops");**/
-
-    /**
-    name.push(document.getElementById("nameDrop").children[2].value);
-    location.push(document.getElementById("locDrop").children[2].value);
-    grabbers.push(document.getElementById("entitiesDrop").children[2].value);
-    resistance.push(document.getElementById("resistanceDrop").children[2].value);
-    var name;
-    var loc;
-    var grabs;
-    var resists;
-    var url;
-    var descrip;
-    resultCont.innerHTML = "";
-    for (i=0; i<dataLen; i++){
-      name = data[i].name;
-      loc = data[i].location;
-      if (data[i].grabbers){
-        grabs = data[i].grabbers;
-      }
-      resists = data[i].resistance;
-      url = data[i].url;
-      descrip = data[i].desc;
-      //include?
-      if (name === nameCrit || loc === locationCrit || $.inArray(resistCrit,resists) > -1){
-        div = document.createElement('div');
-        div.className= "result";
-        div.innerHTML = buildResult(url, name, descrip, grabs, resists);
-        resultCont.appendChild(div);
-      } else if (grabbers) {
-        if ($.inArray(grabCrit, grabs) > -1){
-          div = document.createElement('div');
-          div.className= "result";
-          div.innerHTML = buildResult(url, name, descrip, grabs, resists);
-          resultCont.appendChild(div);
-        }
-      }
-    }
-    **/
 
     var url = document.URL + "/search.json";
     var cb = function(data){
@@ -323,31 +273,13 @@ function doSearch() {
     buildForm(location, "location", fd);
     buildForm(grabbers, "grabbers", fd);
     buildForm(resistance, "resistance", fd);
-    /**fd.append('name1', name1);
-    fd.append('name2', name2);
-    fd.append('name3', name3);
-    fd.append('location1', location1);
-    fd.append('location2', location2);
-    fd.append('location3', location3);
-    fd.append('grabbers1', grabbers1);
-    fd.append('grabbers2', grabbers2);
-    fd.append('grabbers3', grabbers3);
-    fd.append('resistance1', resistance1);
-    fd.append('resistance2', resistance2);
-    fd.append('resistance3', resistance3);**/
     // send it to the server
     var req = new XMLHttpRequest();
     req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
-            /**container.innerHTML = "";
-            var content = request.responseText;
-            var data = JSON.parse(content)
-            var i;
-            var dataLen = data.length;
-            for (i=0; i < dataLen; i++){
-                callback(data[i]);
-            }
-            scrollBottom();**/
+            console.log(req.responseText);
+            var content = req.responseText;
+            var data = JSON.parse(content);
             cb(data);
             if (resultCont.innerHTML===""){
               resultCont.innerHTML = "No Results Matched Your Search"
@@ -405,15 +337,9 @@ function request(url, callback, container) {
 
     request.addEventListener('load', function(e){
         if (request.status == 200) {
-            /**container.innerHTML = "";
+            //container.innerHTML = "";
             var content = request.responseText;
-            var data = JSON.parse(content)
-            var i;
-            var dataLen = data.length;
-            for (i=0; i < dataLen; i++){
-                callback(data[i]);
-            }
-            scrollBottom();**/
+            var data = JSON.parse(content);
             callback(data);
         } else {
             console.log(request.status);
