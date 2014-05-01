@@ -277,7 +277,6 @@ function doSearch() {
     var req = new XMLHttpRequest();
     req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
-            console.log(req.responseText);
             var content = req.responseText;
             var data = JSON.parse(content);
             cb(data);
@@ -291,6 +290,40 @@ function doSearch() {
     req.send(fd);
 }
 
+function postData() {
+  var fd = new FormData();
+  var req = new XMLHttpRequest();
+  fd.append("name", getVal("postName"));
+  fd.append("location", getVal("postLoc"));
+  fd.append("url", getVal('postLink'));
+  fd.append("desc", getVal('postDescrip'));
+  fd.append("grabbers", getVal('postGrabbers'));
+  fd.append("resistance", getVal('postResistance'));
+  req.open('POST', '/testInsert', true);
+  req.send(fd);
+}
+
+
+/** currently unused **/
+function request(url, callback, container) {
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.addEventListener('load', function(e){
+        if (request.status == 200) {
+            //container.innerHTML = "";
+            var content = request.responseText;
+            var data = JSON.parse(content);
+            callback(data);
+        } else {
+            console.log(request.status);
+        }
+    }, false);
+
+    request.send(null);
+}
+
+
 function buildForm(selections, criteria, form){
   var selectlen = selections.length;
   var i, datum, tag;
@@ -299,6 +332,11 @@ function buildForm(selections, criteria, form){
       form.append(tag, selections[i]);
   }
   return form;
+}
+
+function getVal(id){
+  var field = document.getElementById(id);
+  return field.value;
 }
 
 function buildResult(url, name, descrip, grabs, resists){
@@ -328,25 +366,6 @@ function buildResult(url, name, descrip, grabs, resists){
   "<p><span class='under'>Culpable governments, companies & individuals:</span> " + grabberString + "</p>" +
   "<p><span class='under'>Forms of resistance:</span> " + resString + "</p>";
   return inner;
-}
-
-
-function request(url, callback, container) {
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-
-    request.addEventListener('load', function(e){
-        if (request.status == 200) {
-            //container.innerHTML = "";
-            var content = request.responseText;
-            var data = JSON.parse(content);
-            callback(data);
-        } else {
-            console.log(request.status);
-        }
-    }, false);
-
-    request.send(null);
 }
 
 function hideresults(){

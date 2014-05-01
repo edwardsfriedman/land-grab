@@ -74,13 +74,9 @@
                 <button type="button" id="resistButton" class="dropAdder" onclick="addDrop('resistButton','resistanceDrop','',3)"> + </button>
                 <select class="dropdown">
                   <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="">Select a Name</option>
+                  <option value="">Select a Form of Resistance</option>
                 </select><br>
               </div>
-              <span style="text-decoration: underline"> types of media:</span><br>
-              <input class="criteria" type="checkbox" name="scholars" value="schlrs">scholarly articles</input><br>
-              <input class="criteria" type="checkbox" name="images" value="imgs">image / video</input><br>
-              <input class="criteria" type="checkbox" name="organizations" value="orgs">organizations</input><br>
               <button class="container" type="button" id="submitButton" onclick="doSearch()"> search </button>
               <button class="container" type="button" onclick="hideresults()"> hide results </button>
             <form>
@@ -89,20 +85,12 @@
             <form>
               <span class="bolder"> share:</span><br>
               name: <input class="textField" id="postName" type="text" name="name"><br>
-              <span style="text-decoration: underline"> type of media (check all that apply):</span><br>
-              <input class="criteria" type="checkbox" name="scholars" value="schlrs">scholarly article</input><br>
-              <input class="criteria" type="checkbox" name="images" value="imgs">image / video</input><br>
-              <input class="criteria" type="checkbox" name="organizations" value="orgs">organization</input><br>
               location: <input class="textField" id="postLoc" type="text" name="location"><br>
               url: <input class="textField" id="postLink" type="text" name="link"><br>
               description: <input class="textField" id="postDescrip" type="text" name="desc"><br>
-              tags: <input class="tag" type="checkbox">tag 1</input>
-              <input class="tag" type="checkbox">tag 2</input>
-              <input class="tag" type="checkbox">tag 3</input><br>
-              <input class="tag" type="checkbox">tag 4</input>
-              <input class="tag" type="checkbox">tag 5</input>
-              <input class="tag" type="checkbox">tag 6</input><br>
-              <button id="post" >submit</button>
+              culpable entities: <input class="textField" id="postGrabbers" type="text" name="grabbers"><br>
+              forms of resistance: <input class="textField" id="postResistance" type="text" name="resistance"><br>
+              <button id="post" type="button" onclick="postData()">submit</button>
             </form>
           </div>
     </div>
