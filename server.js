@@ -98,25 +98,30 @@ app.post('/search.json', function(request, response){
 	});
 });
 
+app.get('/insert', function(request, response){
+	console.log("insert");
+	response.render('insert.html');
+});
 app.post('/testInsert', function(request, response){
     // insert everything to the database
 
-    console.log("POST RECIEVED:", request.body.name, request.body.location, request.body.description);
-
-    console.log(request.body.dsdsd == undefined);
-
-    collection.insert({name:request.body.name,
+    console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance);
+    data = {           name:request.body.name,
                        location:request.body.location,
                        url:request.body.url,
                        desc:request.body.desc,
                        locationsActive:request.body.locationsActive,
                        grabbers:request.body.grabbers,
                        resistance:request.body.resistance
-                      }, function() {
-                          console.log("SUCCESFULLY INSERTED");
+           };
+    if( request.body._id != -1 )
+        data['_id']=request.body._id;
+    //console.log("data to be inserted", data);
+    collection.insert(data, function() {
+                          console.log("insert success");
+                          response.json({ success: true });
                       });
 
-    response.redirect('/');
 });
 
 
