@@ -52,6 +52,8 @@ body {
 
 .result {
   border: 3px solid #B2E6FF;
+  font-family:  'adobe-garamond-pro','AGaramondPro-Regular','Times New Roman','Times','serif';
+  font-variant: normal;
   margin: 8px;
   padding: 5px;
   -webkit-border-radius: 3px;
