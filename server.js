@@ -11,9 +11,10 @@ app.use(express.bodyParser());
 
 
 // our database is named "landGrab", the collection we store everything in is named mapPoints
-var collection, db;
+var collection, db, userCollection;
 var dbUrl = "landGrab";
 var collectionName = "mapPoints";
+var userCollectName = "users";
 
 var mongoClient = new MongoClient(new Server('localhost', 27017));
 mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database) {
@@ -28,10 +29,31 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
 				collection = collec;
 			}
 		});
+		db.collection(userCollectName,function(err,collec){
+			if(err){
+				console.log("error finding usercollection");
+			} else {
+				console.log("success");
+				userCollection = collec;
+			}
+		});
     } else {
     	console.log("Error connecting to db. exiting");
     	process.exit(code=0);
     }
+});
+
+var auth = express.basicAuth(function(user, pass, callback){
+	var userquery = {username : user, password : pass};
+	userCollection.find(userquery).toArray(function(err,entries){
+		if(err || entries.length == 0){
+			console.log("username and password do not match or error");
+			var result = false;
+		} else {
+			var result = true;
+		}
+		callback(null,result);
+	});
 });
 
 app.get('/', function(request, response){
@@ -124,12 +146,12 @@ app.post('/publicInsert', function(request, response){
 
 });
 
-
 //TODO: authenticate get and post for admin
-app.get('/adminList', function(request, response){
+app.get('/adminList', auth, function(request, response){
 	response.render('adminlist.html');
 });
-app.post('/adminList.json', function(request, response) {
+
+app.post('/adminList.json', auth, function(request, response) {
 	console.log("in GET: admin list");
     collection.find().toArray(function(err,entries){
 		if(err){
@@ -145,11 +167,14 @@ app.post('/adminList.json', function(request, response) {
 	});
 
 });
-app.get('/adminInsert', function(request, response){
+
+app.get('/adminInsert', auth, function(request, response){
 	console.log("ADMIN insert");
 	response.render('insert.html');
 });
-app.post('/adminInsert', function(request, response){
+
+
+app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
     console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance, request.body.published);
     data = {           name:request.body.name,
@@ -170,11 +195,12 @@ app.post('/adminInsert', function(request, response){
                       });
 
 });
-app.get('/adminRemove', function(request, response){
+
+app.get('/adminRemove', auth, function(request, response){
 	console.log("ADMIN insert");
 	response.render('insert.html');
 });
-app.post('/adminRemove', function(request, response){
+app.post('/adminRemove', auth, function(request, response){
     // admin insert or update into the database
     console.log("ADMIN removing node with _id", request.body._id);
     collection.remove({ '_id':request.body._id }, function() {
@@ -183,6 +209,7 @@ app.post('/adminRemove', function(request, response){
                       }, 1); //NOTE: justOne parameter set to true so only 1 item is removed
 
 });
+
 app.get('/populateMap.json',function(request, response){
 	collection.find().toArray(function(err,entries){
 		if(err || entries.length == 0) {
@@ -192,6 +219,7 @@ app.get('/populateMap.json',function(request, response){
 		}
 	});
 });
+
 
 var server = app.listen(8081, function(){
 	console.log('Listening on port %d', server.address().port);
