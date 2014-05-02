@@ -104,7 +104,7 @@ app.get('/publicInsert', function(request, response){
 });
 app.post('/publicInsert', function(request, response){
     // insert everything to the database
-    console.log("PUBLIC insert POST: { id=", request.body._id, "name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
+    console.log("PUBLIC insert POST: { name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
     data = {           name:request.body.name,
                        location:request.body.location,
                        url:request.body.url,
@@ -115,9 +115,8 @@ app.post('/publicInsert', function(request, response){
                        submitter:request.body.submitter,
                        published:false
            };
-    if( request.body._id != -1 )
-        data['_id']=request.body._id;
     //console.log("data to be inserted", data);
+    // public insert uses insert because always adding new datapoint, admin insert uses save in order to update existing nodes
     collection.insert(data, function() {
                           console.log("insert success");
                           response.json({ success: true });
@@ -152,7 +151,6 @@ app.get('/adminInsert', function(request, response){
 });
 app.post('/adminInsert', function(request, response){
     // admin insert or update into the database
-
     console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance, request.body.published);
     data = {           name:request.body.name,
                        location:request.body.location,
@@ -166,10 +164,23 @@ app.post('/adminInsert', function(request, response){
     if( request.body._id != -1 )
         data['_id']=request.body._id;
     //console.log("data to be inserted", data);
-    collection.insert(data, function() {
+    collection.save(data, function() {
                           console.log("insert success");
                           response.json({ success: true });
                       });
+
+});
+app.get('/adminRemove', function(request, response){
+	console.log("ADMIN insert");
+	response.render('insert.html');
+});
+app.post('/adminRemove', function(request, response){
+    // admin insert or update into the database
+    console.log("ADMIN removing node with _id", request.body._id);
+    collection.remove({ '_id':request.body._id }, function() {
+                          console.log("remove success");
+                          response.json({ success: true });
+                      }, 1); //NOTE: justOne parameter set to true so only 1 item is removed
 
 });
 app.get('/populateMap.json',function(request, response){

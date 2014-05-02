@@ -12,18 +12,26 @@
     
         $(document).ready(function() {
             console.log("DOC READY");
-            $('#my-form').submit(function (e) {
-                    console.log("FORM SUBMIT", $('#my-form').serialize());
+            $('#insert-form').submit(function (e) {
+                    console.log("FORM SUBMIT", $('#insert-form').serialize());
                     e.preventDefault();
-                    $.post('/publicInsert', $('#my-form').serialize(), function (data) {
+                    $.post('/publicInsert', $('#insert-form').serialize(), function (data) {
+                        console.log("SENT POST");
+                        alert('sent successful'); 
+                    });
+            });
+            $('#remove-form').submit(function (e) {
+                    console.log("FORM REMOVE", $('#remove-form').serialize());
+                    e.preventDefault();
+                    $.post('/adminRemove', $('#remove-form').serialize(), function (data) {
                         console.log("SENT POST");
                         alert('sent successful'); 
                     });
             });
         });
     </script>
-    
-    <form id='my-form'>
+    <h1> Insert into DB: </h1>    
+    <form id='insert-form'>
         <input type='number' name='_id'/>
         <input type='text' name='name'/>
         <input type='text' name='location'/>
@@ -33,6 +41,10 @@
         <input type='text' name='grabbers'/>
         <input type='text' name='resistance'/>
         <input type='submit' value='send'/>
+    </form>
+    <h2> Remove ID from DB </h2>
+    <form id='remove-form'>
+        <input type='number' name='_id'/>
     </form>
 </body>
 </html>
