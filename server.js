@@ -98,21 +98,22 @@ app.post('/search.json', function(request, response){
 	});
 });
 
-app.get('/insert', function(request, response){
-	console.log("insert");
+app.get('/publicInsert', function(request, response){
+	console.log("PUBLIC insert");
 	response.render('insert.html');
 });
-app.post('/testInsert', function(request, response){
+app.post('/publicInsert', function(request, response){
     // insert everything to the database
-
-    console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance);
+    console.log("PUBLIC insert POST: { id=", request.body._id, "name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
     data = {           name:request.body.name,
                        location:request.body.location,
                        url:request.body.url,
                        desc:request.body.desc,
                        locationsActive:request.body.locationsActive,
                        grabbers:request.body.grabbers,
-                       resistance:request.body.resistance
+                       resistance:request.body.resistance,
+                       submitter:request.body.submitter,
+                       published:false
            };
     if( request.body._id != -1 )
         data['_id']=request.body._id;
@@ -125,6 +126,7 @@ app.post('/testInsert', function(request, response){
 });
 
 
+//TODO: authenticate get and post for admin
 app.get('/adminList', function(request, response){
 	response.render('adminlist.html');
 });
@@ -142,6 +144,32 @@ app.post('/adminList.json', function(request, response) {
 			response.json(entries);
 		}
 	});
+
+});
+app.get('/adminInsert', function(request, response){
+	console.log("ADMIN insert");
+	response.render('insert.html');
+});
+app.post('/adminInsert', function(request, response){
+    // admin insert or update into the database
+
+    console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance, request.body.published);
+    data = {           name:request.body.name,
+                       location:request.body.location,
+                       url:request.body.url,
+                       desc:request.body.desc,
+                       locationsActive:request.body.locationsActive,
+                       grabbers:request.body.grabbers,
+                       resistance:request.body.resistance,
+                       published:request.body.published
+           };
+    if( request.body._id != -1 )
+        data['_id']=request.body._id;
+    //console.log("data to be inserted", data);
+    collection.insert(data, function() {
+                          console.log("insert success");
+                          response.json({ success: true });
+                      });
 
 });
 app.get('/populateMap.json',function(request, response){

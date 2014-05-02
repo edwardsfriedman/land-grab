@@ -15,7 +15,7 @@
             $('#my-form').submit(function (e) {
                     console.log("FORM SUBMIT", $('#my-form').serialize());
                     e.preventDefault();
-                    $.post('/testInsert', $('#my-form').serialize(), function (data) {
+                    $.post('/publicInsert', $('#my-form').serialize(), function (data) {
                         console.log("SENT POST");
                         alert('sent successful'); 
                     });
