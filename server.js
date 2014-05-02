@@ -125,6 +125,25 @@ app.post('/testInsert', function(request, response){
 });
 
 
+app.get('/adminList', function(request, response){
+	response.render('adminlist.html');
+});
+app.post('/adminList.json', function(request, response) {
+	console.log("in GET: admin list");
+    collection.find().toArray(function(err,entries){
+		if(err){
+			console.log("error: ");
+			console.log(err);
+		} else if(entries.length == 0) {
+			console.log("no results found");
+		} else {
+			console.log("Results:");
+			//console.log(entries);
+			response.json(entries);
+		}
+	});
+
+});
 app.get('/populateMap.json',function(request, response){
 	collection.find().toArray(function(err,entries){
 		if(err || entries.length == 0) {
