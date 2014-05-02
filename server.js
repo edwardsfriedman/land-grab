@@ -100,7 +100,7 @@ app.post('/search.json', function(request, response){
 
 app.get('/publicInsert', function(request, response){
 	console.log("PUBLIC insert");
-	response.render('insert.html');
+	response.render('test.html');
 });
 app.post('/publicInsert', function(request, response){
     // insert everything to the database
@@ -127,7 +127,7 @@ app.post('/publicInsert', function(request, response){
 
 //TODO: authenticate get and post for admin
 app.get('/adminList', function(request, response){
-	response.render('adminlist.html');
+	response.render('test.html');
 });
 app.post('/adminList.json', function(request, response) {
 	console.log("in GET: admin list");
@@ -147,7 +147,7 @@ app.post('/adminList.json', function(request, response) {
 });
 app.get('/adminInsert', function(request, response){
 	console.log("ADMIN insert");
-	response.render('insert.html');
+	response.render('test.html');
 });
 app.post('/adminInsert', function(request, response){
     // admin insert or update into the database
@@ -159,6 +159,7 @@ app.post('/adminInsert', function(request, response){
                        locationsActive:request.body.locationsActive,
                        grabbers:request.body.grabbers,
                        resistance:request.body.resistance,
+                       submitter:request.body.submitter,
                        published:request.body.published
            };
     if( request.body._id != -1 )
@@ -171,8 +172,8 @@ app.post('/adminInsert', function(request, response){
 
 });
 app.get('/adminRemove', function(request, response){
-	console.log("ADMIN insert");
-	response.render('insert.html');
+	console.log("ADMIN remove");
+	response.render('test.html');
 });
 app.post('/adminRemove', function(request, response){
     // admin insert or update into the database
