@@ -295,12 +295,7 @@ function doSearch() {
           while (parent.className !== 'result'){
             parent = parent.parentNode;
           }
-          var data = parent.data;
-          $(parent.children[1]).slideToggle();
-
-          geodude.query(data.location, function(error, result){
-            map.setView([result.latlng[0], result.latlng[1]+3], 7);
-          });
+          expandResult(parent);
         };
         resultCont.appendChild(div);
         // geoJSON
@@ -316,8 +311,11 @@ function doSearch() {
             console.log(geojson);
             featureLayer.setGeoJSON(geojson).addTo(map);
             featureLayer.on('click', function(e) {
+              var result = document.getElementById(e.layer.feature.properties.id);
+              expandResult(result);
               ltlng = e.layer.getLatLng();
               map.setView([ltlng.lat,ltlng.lng+3], 7);
+
             });
           }
         });
@@ -355,14 +353,13 @@ function doSearch() {
     req.send(fd);
 }
 
-function zoomTo(e){
-    var data = e.target.data;
-    console.log('zooming to ' + data.location);
-    geodude.query(data.location, function(error, result){
-      console.log("arrived at " + result.latlng);
-      map.setView([result.latlng[0], result.latlng[1]+3], 7);
-    });
+function expandResult(node){
+  var data = node.data;
+  $(node.children[1]).slideToggle();
 
+  geodude.query(data.location, function(error, result){
+    map.setView([result.latlng[0], result.latlng[1]+3], 7);
+  });
 }
 
 function postData() {
