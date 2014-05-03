@@ -3,12 +3,17 @@ window.addEventListener('load', function(){
  /****** MAP SETUP *******/
   var bounds = new L.LatLngBounds(new L.LatLng(85.00542734823001, 214.62890625),
            new L.LatLng(-85.035941506574, -194.4140625));
-  var map = L.mapbox.map('map', 'friedboy.hml0l3kn', {
+  map = L.mapbox.map('map', 'friedboy.hml0l3kn', {
       minZoom: 2,
       maxBounds: bounds
   });
   map.zoomControl.setPosition('topright');
   map.scrollWheelZoom.disable();
+
+  //***GEOCODER*****/
+  geodude = L.mapbox.geocoder('friedboy.hml0l3kn');
+
+  featureLayer = L.mapbox.featureLayer();
   /****** Load DATA ******/
   names = [];
   locations = [];
@@ -92,6 +97,7 @@ function populateDrops(){
 }
 
 function srchButton(){
+  var resultsBox = document.getElementById('resultsContain');
   var actionBox = document.getElementById('actionBox');
   var searchBox = document.getElementById('searchBox');
   var searchBut = document.getElementById('search');
@@ -103,13 +109,19 @@ function srchButton(){
     $(actionBox).slideToggle();
     searchBut.innerHTML = "hide";
   } else {
-    if (searchBox.style.display === "none") { //if share is up
+    if (shareBox.style.display !== "none") { //if share is up
         $(actionBox).slideToggle(100, function(){
           shareBox.style.display = "none";
           searchBox.style.display = "block";
           searchBut.innerHTML = "hide";
           shareBut.innerHTML = "share";
           $(actionBox).slideToggle();
+        });
+    } else if (resultsBox.style.display !== "none"){ //if results is up
+        $(actionBox).slideToggle(100, function(){
+          resultsBox.style.display = "none";
+          searchBut.innerHTML = "search";
+          resultsBox.innerHTML = "";
         });
     } else { //if search is already up
       searchBut.innerHTML = "search";
@@ -120,7 +132,9 @@ function srchButton(){
   }
 };
 
+
 function shareButton(){
+    var resultsBox = document.getElementById('resultsContain');
     var actionBox = document.getElementById('actionBox');
     var searchBox = document.getElementById('searchBox');
     var searchBut = document.getElementById('search');
@@ -132,12 +146,21 @@ function shareButton(){
       $(actionBox).slideToggle();
       shareBut.innerHTML = "hide";
     } else {
-      if (shareBox.style.display === "none") { //if search is up
+      if (searchBox.style.display !== "none") { //if search is up
           $(actionBox).slideToggle(100, function(){
             shareBox.style.display = "block";
             searchBox.style.display = "none";
             shareBut.innerHTML = "hide";
             searchBut.innerHTML = "search";
+            $(actionBox).slideToggle();
+          });
+      } else if (resultsBox.style.display !== "none"){ //if results is up
+          $(actionBox).slideToggle(100, function(){
+            resultsBox.style.display = "none";
+            searchBut.innerHTML = "search";
+            resultsBox.innerHTML = "";
+            shareBox.style.display = "block";
+            shareBut.innerHTML = "hide";
             $(actionBox).slideToggle();
           });
       } else { //if share is already up
@@ -255,16 +278,40 @@ function doSearch() {
 
     var url = document.URL + "/search.json";
     var cb = function(data){
-      console.log("it's here: " + data);
+      resultCont.innerHTML = "<span class='bolder'>results:</span> <button class='container' type='button' id='resultsBack' onclick='back()'> <-- </button><br>";
+      /** geoJSON **/
+      var geojson = [];
       var datalen = data.length;
-      var i;
-      var datum;
+      var i, datum, geo, ltlng;
       for (i=0; i< datalen; i++){
         datum = data[i];
         div = document.createElement('div');
-        div.className= "result";
-        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance);
+        div.className = "result";
+        div.id = datum._id;
+        div.data = datum;
+        div.onClick = function(){
+            //TODO: center on marker
+        }
+        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.location);
         resultCont.appendChild(div);
+
+        // geoJSON
+        geodude.query(datum.location, function(error, result){
+            console.log(result.latlng);
+            geo = { "type": "Feature",
+                    "geometry": { "type": "Point", "coordinates": result.latlng.reverse() },
+                    "properties": { "id": datum._id, "marker-color": "#fc4353"} };
+            geojson.push(geo);
+            if (geojson.length === datalen) {
+                console.log('duh fuck?');
+                console.log(geojson);
+                featureLayer.setGeoJSON(geojson).addTo(map);
+                featureLayer.on('click', function(e) {
+                  map.setView(e.layer.getLatLng(), 6, true);
+                });
+            }
+        });
+
       }
 
     }
@@ -277,15 +324,22 @@ function doSearch() {
     var req = new XMLHttpRequest();
     req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
-            var content = req.responseText;
-            var data = JSON.parse(content);
-            cb(data);
-            if (resultCont.innerHTML===""){
-              resultCont.innerHTML = "No Results Matched Your Search"
-            }
-            if(resultCont.style.display === "none" || resultCont.style.display ===""){
-              $(resultsContain).slideToggle();
-            }
+      $(actionBox).slideToggle(function(){
+        map.setView([55, 10], 2);
+        document.getElementById("searchBox").style.display = 'none';
+        resultCont.style.display = 'block';
+        var content = req.responseText;
+        var data = JSON.parse(content);
+        cb(data);
+        if (resultCont.innerHTML===""){
+          resultCont.innerHTML = "No Results Matched Your Search";
+          //$(resultsContain).slideToggle();
+        }
+        if(resultCont.style.display === "none" || resultCont.style.display ==="block"){
+          //$(resultsContain).slideToggle();
+        }
+        $(actionBox).slideToggle();
+      });
     }, false);
     req.send(fd);
 }
@@ -339,7 +393,7 @@ function getVal(id){
   return field.value;
 }
 
-function buildResult(url, name, descrip, grabs, resists){
+function buildResult(url, name, descrip, grabs, resists, location){
   var grabberString;
   var grablen;
   var resString
@@ -361,13 +415,24 @@ function buildResult(url, name, descrip, grabs, resists){
     resString += resists[j];
     resString += ", ";
   }
-  inner = "<a href='"+ url +"'><h3>" + name + "</h3></a>" +
-  "<p><span class='under'>Description:</span> " + descrip + "</p>" +
+  inner = "<p>" + name + "<br>"+ location +"</p>";
+  /**"<p><span class='under'>Description:</span> " + descrip + "</p>" +
   "<p><span class='under'>Culpable governments, companies & individuals:</span> " + grabberString + "</p>" +
-  "<p><span class='under'>Forms of resistance:</span> " + resString + "</p>";
+  "<p><span class='under'>Forms of resistance:</span> " + resString + "</p>";**/
   return inner;
 }
 
 function hideresults(){
   $(resultsContain).slideToggle();
+}
+
+function back(){
+  var results = document.getElementById("resultsContain");
+  var searchBox = document.getElementById("searchBox");
+  $(actionBox).slideToggle(100, function(){
+    results.innerHTML="";
+    results.style.display = "none";
+    searchBox.style.display = "block";
+    $(actionBox).slideToggle();
+  });
 }

@@ -35,18 +35,11 @@ body {
 }
 
 #resultsContain {
-    float: left;
-    clear: left;
-    position: fixed;
-    z-index: 101;
-    width: 545px;
-    height: auto;
-    max-height: 525px;
-    top:113px;
+    color: white;
+    width: 400px;
     left:15px;
     display: none;
     overflow-y: scroll;
-    border: 1px solid white;
 }
 
 .result {
@@ -58,8 +51,36 @@ body {
   border-radius: 3px;
 }
 
-.result a {
+.result:hover {
+  background-color: #9DEBE9;
+  /*background-color: #EEC591;*/
+  color: black;
+}
+
+.selectRes {
+  border: 1px solid white;
+  color: black
+  background-color: #9DEBE9;
+  margin: 8px;
+  padding: 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.result h2, h3, h4 {
   color: white;
+  opacity: 1;
+}
+
+#resultsBack {
+  float: right;
+  padding: 2px;
+}
+
+.result h3, h4{
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .under {
