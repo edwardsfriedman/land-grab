@@ -289,30 +289,41 @@ function doSearch() {
         div.className = "result";
         div.id = datum._id;
         div.data = datum;
-        div.onClick = function(){
-            //TODO: center on marker
-        }
         div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.location);
-        resultCont.appendChild(div);
+        div.onclick= function(e){
+          var parent = e.target;
+          while (parent.className !== 'result'){
+            parent = parent.parentNode;
+          }
+          var data = parent.data;
+          $(parent.children[1]).slideToggle();
 
+          geodude.query(data.location, function(error, result){
+            map.setView([result.latlng[0], result.latlng[1]+3], 7);
+          });
+        };
+        resultCont.appendChild(div);
         // geoJSON
         geodude.query(datum.location, function(error, result){
-            console.log(result.latlng);
-            geo = { "type": "Feature",
-                    "geometry": { "type": "Point", "coordinates": result.latlng.reverse() },
-                    "properties": { "id": datum._id, "marker-color": "#fc4353"} };
-            geojson.push(geo);
-            if (geojson.length === datalen) {
-                console.log('duh fuck?');
-                console.log(geojson);
-                featureLayer.setGeoJSON(geojson).addTo(map);
-                featureLayer.on('click', function(e) {
-                  map.setView(e.layer.getLatLng(), 6, true);
-                });
-            }
+          ltlng = result.latlng.slice();
+          ltlng.reverse();
+          geo = { "type": "Feature",
+                  "geometry": { "type": "Point", "coordinates": ltlng },
+                  "properties": { "id": datum._id, "marker-color": "#fc4353"} };
+          geojson.push(geo);
+          if (geojson.length === datalen) {
+            console.log('duh fuck?');
+            console.log(geojson);
+            featureLayer.setGeoJSON(geojson).addTo(map);
+            featureLayer.on('click', function(e) {
+              ltlng = e.layer.getLatLng();
+              map.setView([ltlng.lat,ltlng.lng+3], 7);
+            });
+          }
         });
-
       }
+
+
 
     }
     var fd = new FormData();
@@ -342,6 +353,16 @@ function doSearch() {
       });
     }, false);
     req.send(fd);
+}
+
+function zoomTo(e){
+    var data = e.target.data;
+    console.log('zooming to ' + data.location);
+    geodude.query(data.location, function(error, result){
+      console.log("arrived at " + result.latlng);
+      map.setView([result.latlng[0], result.latlng[1]+3], 7);
+    });
+
 }
 
 function postData() {
@@ -416,10 +437,12 @@ function buildResult(url, name, descrip, grabs, resists, location){
     resString += resists[j];
     resString += ", ";
   }
-  inner = "<p>" + name + "<br>"+ location +"</p>";
-  /**"<p><span class='under'>Description:</span> " + descrip + "</p>" +
+  inner = "<p>" + name + "<br>"+ location +"</p>"+
+  "<div class=fullResult>" +
+  "<p><span class='under'>Description</span>: " + descrip + "</p>" +
+  "<p><span class='under'>url</span>:   <a href='" + url + "'>" + url.split('/')[2] + "</a></p>" +
   "<p><span class='under'>Culpable governments, companies & individuals:</span> " + grabberString + "</p>" +
-  "<p><span class='under'>Forms of resistance:</span> " + resString + "</p>";**/
+  "<p><span class='under'>Forms of resistance:</span> " + resString + "</p></div>";
   return inner;
 }
 
