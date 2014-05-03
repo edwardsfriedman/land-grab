@@ -11,9 +11,10 @@ app.use(express.bodyParser());
 
 
 // our database is named "landGrab", the collection we store everything in is named mapPoints
-var collection, db;
+var collection, db, userCollection;
 var dbUrl = "landGrab";
 var collectionName = "mapPoints";
+var userCollectName = "users";
 
 var mongoClient = new MongoClient(new Server('localhost', 27017));
 mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database) {
@@ -28,10 +29,49 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
 				collection = collec;
 			}
 		});
+		db.collection(userCollectName,function(err,collec){
+			if(err){
+				console.log("error finding usercollection");
+			} else {
+				console.log("success");
+				userCollection = collec;
+				userCollection.count(function (err, count){
+					if(!err && count === 0){
+						//users collection is empty.  create default admin, ensure uniqueness
+						var defaultAdmin = {username : "LGAdmin", password : "defaultAdmin"}
+						userCollection.insert(defaultAdmin, function(err, result){
+							if(!err){
+								console.log("users initialized");
+							} else {
+								console.log(err);
+								exit();
+							}
+						})
+						userCollection.insert(data, function() {
+                          console.log("insert success");
+                          response.json({ success: true });
+                      });
+					};
+				})
+			}
+		});
     } else {
     	console.log("Error connecting to db. exiting");
     	process.exit(code=0);
     }
+});
+
+var auth = express.basicAuth(function(user, pass, callback){
+	var userquery = {username : user, password : pass};
+	userCollection.find(userquery).toArray(function(err,entries){
+		if(err || entries.length == 0){
+			console.log("username and password do not match or error");
+			var result = false;
+		} else {
+			var result = true;
+		}
+		callback(null,result);
+	});
 });
 
 app.get('/', function(request, response){
@@ -98,25 +138,25 @@ app.post('/search.json', function(request, response){
 	});
 });
 
-app.get('/insert', function(request, response){
-	console.log("insert");
-	response.render('insert.html');
+app.get('/publicInsert', function(request, response){
+	console.log("PUBLIC insert");
+	response.render('test.html');
 });
-app.post('/testInsert', function(request, response){
+app.post('/publicInsert', function(request, response){
     // insert everything to the database
-
-    console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance);
+    console.log("PUBLIC insert POST: { name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
     data = {           name:request.body.name,
                        location:request.body.location,
                        url:request.body.url,
                        desc:request.body.desc,
                        locationsActive:request.body.locationsActive,
                        grabbers:request.body.grabbers,
-                       resistance:request.body.resistance
+                       resistance:request.body.resistance,
+                       submitter:request.body.submitter,
+                       published:false
            };
-    if( request.body._id != -1 )
-        data['_id']=request.body._id;
     //console.log("data to be inserted", data);
+    // public insert uses insert because always adding new datapoint, admin insert uses save in order to update existing nodes
     collection.insert(data, function() {
                           console.log("insert success");
                           response.json({ success: true });
@@ -124,6 +164,69 @@ app.post('/testInsert', function(request, response){
 
 });
 
+//TODO: authenticate get and post for admin
+app.get('/adminList', function(request, response){
+	response.render('test.html');
+});
+
+app.post('/adminList.json', auth, function(request, response) {
+	console.log("in GET: admin list");
+    collection.find().toArray(function(err,entries){
+		if(err){
+			console.log("error: ");
+			console.log(err);
+		} else if(entries.length == 0) {
+			console.log("no results found");
+		} else {
+			console.log("Results:");
+			//console.log(entries);
+			response.json(entries);
+		}
+	});
+
+});
+
+app.get('/adminInsert', auth, function(request, response){
+	console.log("ADMIN insert");
+	response.render('test.html');
+});
+
+
+app.post('/adminInsert', auth, function(request, response){
+    // admin insert or update into the database
+    console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance, request.body.published);
+    data = {           name:request.body.name,
+                       location:request.body.location,
+                       url:request.body.url,
+                       desc:request.body.desc,
+                       locationsActive:request.body.locationsActive,
+                       grabbers:request.body.grabbers,
+                       resistance:request.body.resistance,
+                       submitter:request.body.submitter,
+                       published:request.body.published
+           };
+    if( request.body._id != -1 )
+        data['_id']=request.body._id;
+    //console.log("data to be inserted", data);
+    collection.save(data, function() {
+                          console.log("insert success");
+                          response.json({ success: true });
+                      });
+
+});
+app.get('/adminRemove', function(request, response){
+	console.log("ADMIN remove");
+	response.render('test.html');
+});
+app.post('/adminRemove', auth, function(request, response){
+    // admin insert or update into the database
+    console.log("ADMIN removing node with _id", request.body._id);
+    collection.remove({ '_id':request.body._id }, function() {
+                          console.log("remove success");
+                          response.json({ success: true });
+                      }, 1); //NOTE: justOne parameter set to true so only 1 item is removed
+
+});
 
 app.get('/populateMap.json',function(request, response){
 	collection.find().toArray(function(err,entries){
@@ -134,6 +237,7 @@ app.get('/populateMap.json',function(request, response){
 		}
 	});
 });
+
 
 var server = app.listen(8081, function(){
 	console.log('Listening on port %d', server.address().port);

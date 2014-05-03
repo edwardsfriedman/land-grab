@@ -353,7 +353,8 @@ function postData() {
   fd.append("desc", getVal('postDescrip'));
   fd.append("grabbers", getVal('postGrabbers'));
   fd.append("resistance", getVal('postResistance'));
-  req.open('POST', '/testInsert', true);
+  //TODO: this is right now sending to public insert
+  req.open('POST', '/publicInsert', true);
   req.send(fd);
 }
 
