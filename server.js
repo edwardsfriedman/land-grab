@@ -46,13 +46,9 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
 								console.log(err);
 								exit();
 							}
-						})
-						userCollection.insert(data, function() {
-                          console.log("insert success");
-                          response.json({ success: true });
-                      });
+						});
 					};
-				})
+				});
 			}
 		});
     } else {
