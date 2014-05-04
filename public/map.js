@@ -15,45 +15,53 @@ window.addEventListener('load', function(){
 
   featureLayer = L.mapbox.featureLayer();
   /****** Load DATA ******/
-  names = [];
-  locations = [];
-  grabbers = [];
-  resistance = [];
-  var mydata = theta;
-  var datalen = mydata.length
-  var i;
-  var grabsublen;
-  var resistsublen;
-  var j;
-  for (i=0; i<datalen; i++){
-      //grab names
-      if ($.inArray(mydata[i].name, names) == -1){
-        names.push(mydata[i].name);
-      }
-      //grab locations
-      if ($.inArray(mydata[i].location, locations) == -1){
-        locations.push(mydata[i].location);
-      }
-      //grab offenders
-      if (mydata[i].grabbers){
-        grabsublen = mydata[i].grabbers.length;
-        for (j=0; j<grabsublen; j++){
-          if ($.inArray(mydata[i].grabbers[j], grabbers) == -1){
-            grabbers.push(mydata[i].grabbers[j]);
+  var req = new XMLHttpRequest();
+  req.open('GET', '/populateMap.json', true);
+  req.addEventListener('load', function(e){
+    names = [];
+    locations = [];
+    grabbers = [];
+    resistance = [];
+    var content = req.responseText;
+    var mydata = JSON.parse(content);
+    var datalen = mydata.length
+    var i;
+    var grabsublen;
+    var resistsublen;
+    var j;
+    for (i=0; i<datalen; i++){
+        //grab names
+        if ($.inArray(mydata[i].name, names) == -1){
+          console.log('adding name');
+          names.push(mydata[i].name);
+        }
+        //grab locations
+        if ($.inArray(mydata[i].location, locations) == -1){
+          locations.push(mydata[i].location);
+        }
+        //grab offenders
+        if (mydata[i].grabbers){
+          grabsublen = mydata[i].grabbers.length;
+          for (j=0; j<grabsublen; j++){
+            if ($.inArray(mydata[i].grabbers[j], grabbers) == -1){
+              grabbers.push(mydata[i].grabbers[j]);
+            }
+          }
+        }
+        //grab resistance
+        if (mydata[i].resistance){
+          resistsublen = mydata[i].resistance.length;
+          for (j=0; j<resistsublen; j++){
+            if ($.inArray(mydata[i].resistance[j], resistance) == -1){
+              resistance.push(mydata[i].resistance[j]);
+            }
           }
         }
       }
-      //grab resistance
-      if (mydata[i].resistance){
-        resistsublen = mydata[i].resistance.length;
-        for (j=0; j<resistsublen; j++){
-          if ($.inArray(mydata[i].resistance[j], resistance) == -1){
-            resistance.push(mydata[i].resistance[j]);
-          }
-        }
-      }
-  }
-  populateDrops();
+      populateDrops();
+    });
+    req.send();
+
   /****** SEARCH BOX *******/
   document.getElementById('actionBox').style.display = "none";
 }, false);
@@ -65,6 +73,7 @@ function populateDrops(){
   var resistDrop = document.getElementById("resistanceDrop").children[2];
   //Put data in list
   var nameslen = names.length;
+  console.log(nameslen + " is how many names");
   var loclen = locations.length;
   var grablen = grabbers.length;
   var resistlen = resistance.length;
@@ -396,17 +405,28 @@ function closeResults(node){
 }
 
 function postData() {
-  var fd = new FormData();
-  var req = new XMLHttpRequest();
-  fd.append("name", getVal("postName"));
-  fd.append("location", getVal("postLoc"));
-  fd.append("url", getVal('postLink'));
-  fd.append("desc", getVal('postDescrip'));
-  fd.append("grabbers", getVal('postGrabbers'));
-  fd.append("resistance", getVal('postResistance'));
-  //TODO: this is right now sending to public insert - whenever admin insert is handled it's slightly different and published needs to be validated
-  req.open('POST', '/publicInsert', true);
-  req.send(fd);
+  geodude.query(getVal('postLoc'), function(error, result){
+    var location;
+    if (!error){
+      location = {name: getVal('postLoc'), latlng: result.latlng};
+      var fd = new FormData();
+      var req = new XMLHttpRequest();
+      fd.append("name", getVal("postName"));
+      fd.append("location", location);
+      fd.append("url", getVal('postLink'));
+      fd.append("desc", getVal('postDescrip'));
+      fd.append("grabbers", getVal('postGrabbers'));
+      fd.append("resistance", getVal('postResistance'));
+      fd.append("submitter", getVal('postEmail'));
+      //TODO: this is right now sending to public insert - whenever admin insert is handled it's slightly different and published needs to be validated
+      req.open('POST', '/publicInsert', true);
+      req.send(fd);
+    } else {
+      console.log(error);
+      window.alert('Please enter a valid location');
+      document.getElementById('postLoc').value = "";
+    }
+  });
 }
 
 
