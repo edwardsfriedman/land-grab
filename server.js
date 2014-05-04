@@ -148,13 +148,13 @@ app.post('/publicInsert', function(request, response){
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
     
-    var data = {       name:request.body.name.trim(),
-                       location:request.body.location.trim(),
-                       url:request.body.url.trim(),
-                       desc:request.body.desc.trim(),
+    var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
+                       location:(request.body.location==undefined)? undefined : request.body.location.trim(),//TODO: make obj
+                       url:(request.body.url==undefined)? undefined : request.body.url.trim(),
+                       desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
                        resistance:resistanceList,
-                       submitter:request.body.submitter.trim(),
+                       submitter:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
                        published:false
            };
     //console.log("data to be inserted", data);
@@ -176,8 +176,7 @@ app.get('/adminList.json', auth, function(request, response) {
 		} else if(entries.length == 0) {
 			console.log("no results found");
 		} else {
-			console.log("Results:");
-			//console.log(entries);
+			//console.log(entries[0].name);
 			response.json(entries);
 		}
 	});
@@ -188,20 +187,20 @@ app.get('/adminList.json', auth, function(request, response) {
 
 app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
-    console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance, request.body.published);
+    console.log("PUBLIC insert POST: { name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
      
-    var data = {       name:request.body.name.trim(),
-                       location:request.body.location.trim(),
-                       url:request.body.url.trim(),
-                       desc:request.body.desc.trim(),
+    var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
+                       location:(request.body.location==undefined)? undefined : request.body.location.trim(),//TODO: make obj
+                       url:(request.body.url==undefined)? undefined : request.body.url.trim(),
+                       desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
                        resistance:resistanceList,
-                       submitter:request.body.submitter.trim(),
+                       submitter:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
                        published:request.body.published
-           };
+       };
     if( request.body._id != -1 )
         data['_id']=request.body._id;
     //console.log("data to be inserted", data);

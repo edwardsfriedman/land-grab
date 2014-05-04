@@ -42,9 +42,28 @@
                 req.addEventListener('load', function(e){
                         var content = req.responseText;
                         var data = JSON.parse(content);
-                        console.log("DATA", data);
-                        for(var s in data) {
-                            $('#result-list').append(s.name);
+                        //console.log("DATA", data);
+                        for(var i=0;i<data.length;i++) {
+                            console.log(data[i]);
+                            s='<li>' + JSON.stringify(data[i].name) + '</li>';
+                            $('#result-list').append(s);
+                        }
+                }, false);
+                req.send();
+            });
+            $('#get-public-list').click(function (e) {
+                console.log("requesting public data...");
+                e.preventDefault();
+                var req = new XMLHttpRequest();
+                req.open('GET', '/populateMap.json', true);
+                req.addEventListener('load', function(e){
+                        var content = req.responseText;
+                        var data = JSON.parse(content);
+                        //console.log("DATA", data);
+                        for(var i=0;i<data.length;i++) {
+                            console.log(data[i]);
+                            s='<li>' + JSON.stringify(data[i].name) + '</li>';
+                            $('#public-list').append(s);
                         }
                 }, false);
                 req.send();
@@ -83,5 +102,8 @@
     <h1> Get all elements in the DB: admin </h1>
     <button id='get-list' type="button">Click to get admin list</button>
     <ul id='result-list' list-style=none max-height=100px overflow-y=scroll background=#eee padding=20px width=50%>
+    <h1> Get all elements in the DB: public </h1>
+    <button id='get-public-list' type="button">Click to get public list</button>
+    <ul id='public-list' list-style=none max-height=100px overflow-y=scroll background=#eee padding=20px width=50%>
 </body>
 </html>
