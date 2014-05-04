@@ -13,9 +13,10 @@ body {
 }
 
 #header {
-    position: absolute;
+    position: relative;
     display: inline-block;
     z-index: 100;
+    margin-right; 2px;
     margin: 10px;
     float: left
 }
@@ -59,9 +60,9 @@ body {
 }
 
 .selectRes {
-  border: 1px solid white;
-  color: black
   background-color: #9DEBE9;
+  color: black;
+  border: 1px solid white;
   margin: 8px;
   padding: 5px;
   -webkit-border-radius: 3px;
@@ -69,12 +70,16 @@ body {
   border-radius: 3px;
 }
 
+
 .result h2, h3, h4 {
   color: white;
 }
 
 #actionBox {
   opacity: .4;
+  position: relative;
+  margin-top: 11px;
+  margin-left: -3px;
 }
 
 #actionBox:hover {

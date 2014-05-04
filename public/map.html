@@ -18,81 +18,81 @@
           <button id="search" class="container" onclick="srchButton()">search</button>
           <button id="share" class="container" onclick="shareButton()">share</button>
         </div>
-        <div id="actionBox" class="container">
-          <div id="searchBox">
-            <form>
-              <span class="bolder"> search:</span><br>
-              <input class="criteria" type="checkbox" name="searchArea" value="area">search visible area</input><br>
-              <div id="nameDrop"> name: <br>
-                <button type="button" id="nameButton" class="dropAdder" onclick="addDrop('nameButton','nameDrop','',3)"> + </button>
-                <select class="dropdown">
-                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="">Select a Name</option>
-                </select><br>
-              </div>
-              <div id="locDrop"> location: <br>
-                <button type="button" id="locButton" class="dropAdder" onclick="addDrop('locButton','locDrop','',3)"> + </button>
-                <select class="dropdown">
-                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="">Select a Location</option>
-                </select><br>
-              </div>
-              <div id="settingDrop" style="display: none"> setting: <br>
-                <button type="button" id="settingButton" class="dropAdder" onclick="addDrop('settingButton','settingDrop','',3)"> + </button>
-                <select class="dropdown">
-                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                </select><br>
-              </div>
-              <div id="entitiesDrop"> governments, companies & individuals: <br>
-                <button type="button" id="entitiesButton" class="dropAdder" onclick="addDrop('entitiesButton','entitiesDrop','',3)"> + </button>
-                <select class="dropdown">
-                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="">Select a Culpable Entity</option>
-                </select><br>
-              </div>
-              <div id="governmentsDrop" style="display: none">>governments: <br>
-                <button type="button" id="govButton" class="dropAdder" onclick="addDrop('govButton','governmentsDrop','',3)"> + </button>
-                <select class="dropdown">
-                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                </select><br>
-              </div>
-              <div id="useBeforeDrop" style="display: none">> land use before grab: <br>
-                <button type="button" id="beforeButton" class="dropAdder" onclick="addDrop('beforeButton','useBeforeDrop','',3)"> + </button>
-                <select class="dropdown">
-                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                </select><br>
-              </div>
-              <div id="useAfterDrop" style="display: none"> land use after grab: <br>
-                <button type="button" id="afterButton" class="dropAdder" onclick="addDrop('afterButton','useAfterDrop','',3)"> + </button>
-                <select class="dropdown">
-                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                </select><br>
-              </div>
-              <div id="resistanceDrop">forms of resistance: <br>
-                <button type="button" id="resistButton" class="dropAdder" onclick="addDrop('resistButton','resistanceDrop','',3)"> + </button>
-                <select class="dropdown">
-                  <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
-                  <option value="">Select a Form of Resistance</option>
-                </select><br>
-              </div>
-              <button class="container" type="button" id="submitButton" onclick="doSearch()"> search </button>
-            <form>
-          </div>
-          <div id="shareBox">
-            <form>
-              <span class="bolder"> share:</span><br>
-              name: <input class="textField" id="postName" type="text" name="name"><br>
-              location: <input class="textField" id="postLoc" type="text" name="location"><br>
-              url: <input class="textField" id="postLink" type="text" name="link"><br>
-              description: <input class="textField" id="postDescrip" type="text" name="desc"><br>
-              culpable entities: <input class="textField" id="postGrabbers" type="text" name="grabbers"><br>
-              forms of resistance: <input class="textField" id="postResistance" type="text" name="resistance"><br>
-              <button id="post" type="button" onclick="postData()">submit</button>
-            </form>
-          </div>
-          <div id="resultsContain" class="container">
-            <button onclick='back()'> <-- </button>
-          </div>
+      </div>
+      <div id="actionBox" class="container">
+        <div id="searchBox">
+          <form>
+            <span class="bolder"> search:</span><br>
+            <input class="criteria" type="checkbox" name="searchArea" value="area">search visible area</input><br>
+            <div id="nameDrop"> name: <br>
+              <button type="button" id="nameButton" class="dropAdder" onclick="addDrop('nameButton','nameDrop','',3)"> + </button>
+              <select class="dropdown">
+                <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                <option value="">Select a Name</option>
+              </select><br>
+            </div>
+            <div id="locDrop"> location: <br>
+              <button type="button" id="locButton" class="dropAdder" onclick="addDrop('locButton','locDrop','',3)"> + </button>
+              <select class="dropdown">
+                <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                <option value="">Select a Location</option>
+              </select><br>
+            </div>
+            <div id="settingDrop" style="display: none"> setting: <br>
+              <button type="button" id="settingButton" class="dropAdder" onclick="addDrop('settingButton','settingDrop','',3)"> + </button>
+              <select class="dropdown">
+                <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+              </select><br>
+            </div>
+            <div id="entitiesDrop"> governments, companies & individuals: <br>
+              <button type="button" id="entitiesButton" class="dropAdder" onclick="addDrop('entitiesButton','entitiesDrop','',3)"> + </button>
+              <select class="dropdown">
+                <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                <option value="">Select a Culpable Entity</option>
+              </select><br>
+            </div>
+            <div id="governmentsDrop" style="display: none">>governments: <br>
+              <button type="button" id="govButton" class="dropAdder" onclick="addDrop('govButton','governmentsDrop','',3)"> + </button>
+              <select class="dropdown">
+                <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+              </select><br>
+            </div>
+            <div id="useBeforeDrop" style="display: none">> land use before grab: <br>
+              <button type="button" id="beforeButton" class="dropAdder" onclick="addDrop('beforeButton','useBeforeDrop','',3)"> + </button>
+              <select class="dropdown">
+                <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+              </select><br>
+            </div>
+            <div id="useAfterDrop" style="display: none"> land use after grab: <br>
+              <button type="button" id="afterButton" class="dropAdder" onclick="addDrop('afterButton','useAfterDrop','',3)"> + </button>
+              <select class="dropdown">
+                <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+              </select><br>
+            </div>
+            <div id="resistanceDrop">forms of resistance: <br>
+              <button type="button" id="resistButton" class="dropAdder" onclick="addDrop('resistButton','resistanceDrop','',3)"> + </button>
+              <select class="dropdown">
+                <!-- PLACE HOLDER FOR DYNAMIC DROPDOWNS -->
+                <option value="">Select a Form of Resistance</option>
+              </select><br>
+            </div>
+            <button class="container" type="button" id="submitButton" onclick="doSearch()"> search </button>
+          <form>
+        </div>
+        <div id="shareBox">
+          <form>
+            <span class="bolder"> share:</span><br>
+            name: <input class="textField" id="postName" type="text" name="name"><br>
+            location: <input class="textField" id="postLoc" type="text" name="location"><br>
+            url: <input class="textField" id="postLink" type="text" name="link"><br>
+            description: <input class="textField" id="postDescrip" type="text" name="desc"><br>
+            culpable entities: <input class="textField" id="postGrabbers" type="text" name="grabbers"><br>
+            forms of resistance: <input class="textField" id="postResistance" type="text" name="resistance"><br>
+            <button id="post" type="button" onclick="postData()">submit</button>
+          </form>
+        </div>
+        <div id="resultsContain" class="container">
+          <button onclick='back()'> <-- </button>
         </div>
     </div>
   </body>

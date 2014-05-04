@@ -121,7 +121,6 @@ function srchButton(){
         $(actionBox).slideToggle(100, function(){
           resultsBox.style.display = "none";
           searchBut.innerHTML = "search";
-          resultsBox.innerHTML = "";
         });
     } else { //if search is already up
       searchBut.innerHTML = "search";
@@ -158,7 +157,6 @@ function shareButton(){
           $(actionBox).slideToggle(100, function(){
             resultsBox.style.display = "none";
             searchBut.innerHTML = "search";
-            resultsBox.innerHTML = "";
             shareBox.style.display = "block";
             shareBut.innerHTML = "hide";
             $(actionBox).slideToggle();
@@ -295,7 +293,7 @@ function doSearch() {
           while (parent.className !== 'result'){
             parent = parent.parentNode;
           }
-          expandResult(parent);
+          expandResult(parent.id);
         };
         resultCont.appendChild(div);
         // geoJSON
@@ -307,17 +305,11 @@ function doSearch() {
                   "properties": { "id": datum._id, "marker-color": "#fc4353"} };
           geojson.push(geo);
           if (geojson.length === datalen) {
-            console.log('duh fuck?');
-            console.log(geojson);
+            //console.log('duh fuck?');
+            //console.log(geojson);
             featureLayer.setGeoJSON(geojson).addTo(map);
-            featureLayer.on('click', function(e) {
-              var result = document.getElementById(e.layer.feature.properties.id);
-              expandResult(result);
-              ltlng = e.layer.getLatLng();
-              map.setView([ltlng.lat,ltlng.lng+3], 7);
-
-            });
           }
+          featureLayer.on('click', markerClick);
         });
       }
 
@@ -353,13 +345,54 @@ function doSearch() {
     req.send(fd);
 }
 
-function expandResult(node){
+function markerClick(e){
+  //var result = document.getElementById(e.layer.feature.properties.id);
+  //console.log(e.layer.feature.properties.id);
+  expandResult(e.layer.feature.properties.id);
+  ltlng = e.layer.getLatLng();
+  map.setView([ltlng.lat,ltlng.lng+3], 7);
+}
+
+function expandResult(id){
+  var node = document.getElementById(id);
+  var nodeheight = node.offsetTop - 10;
+  var heightstring = nodeheight + "px";
   var data = node.data;
+  var results = document.getElementById('resultsContain');
+  var actionBox = document.getElementById('actionBox');
+  node.className = 'selectRes';
   $(node.children[1]).slideToggle();
 
   geodude.query(data.location, function(error, result){
     map.setView([result.latlng[0], result.latlng[1]+3], 7);
   });
+  closeResults(node);
+  console.log(nodeheight);
+  $(resultsContain).animate({ scrollTop: nodeheight+ 5});
+  if (actionBox.style.display==="none"){
+    results.style.display='block';
+    $(actionBox).slideToggle();
+  }
+}
+
+
+function closeResults(node){
+  var results = document.getElementById('resultsContain');
+  var kids = results.children;
+  var len = kids.length;
+  var i, j, grandkids, gklen;
+  for (i=0; i<len; i++){
+    if (kids[i] !== node && (kids[i].className === 'result' || kids[i].className === 'selectRes')){
+      kids[i].className = 'result';
+      grankids = kids[i].children;
+      gklen = grankids.length;
+      for (j=0; j<gklen; j++){
+        if (grankids[j].className === 'fullResult'){
+          grankids[j].style.display = "none";
+        }
+      }
+    }
+  }
 }
 
 function postData() {
