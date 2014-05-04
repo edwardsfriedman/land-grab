@@ -44,7 +44,7 @@
                         var data = JSON.parse(content);
                         console.log("DATA", data);
                         for(var s in data) {
-                            $('#result-list').append(s);
+                            $('#result-list').append(s.name);
                         }
                 }, false);
                 req.send();
