@@ -145,16 +145,13 @@ app.post('/publicInsert', function(request, response){
     // insert everything to the database
     console.log("PUBLIC insert POST: { name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
     //sanitize input (i.e. strip leading whitespace)
-    var grabberList = request.body.grabbers.split(",").map(function (str) { return str.trim(); });
-    var resistanceList = request.body.resistance.split(",").map(function (str) { return str.trim(); });
-    var locActiveList = request.body.locationsActive.split(",").map(function (str) { return str.trim(); });
+    var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
+    var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
     
-    console.log('list items', grabberList, resistanceList);
-    data = {           name:request.body.name.trim(),
+    var data = {       name:request.body.name.trim(),
                        location:request.body.location.trim(),
                        url:request.body.url.trim(),
                        desc:request.body.desc.trim(),
-                       locationsActive:locActiveList,
                        grabbers:grabberList,
                        resistance:resistanceList,
                        submitter:request.body.submitter.trim(),
@@ -170,7 +167,7 @@ app.post('/publicInsert', function(request, response){
 });
 
 
-app.post('/adminList.json', auth, function(request, response) {
+app.get('/adminList.json', auth, function(request, response) {
 	console.log("in POST: admin list");
     collection.find().toArray(function(err,entries){
 		if(err){
@@ -193,16 +190,13 @@ app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
     console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance, request.body.published);
     //sanitize input (i.e. strip leading whitespace)
-    var grabberList = request.body.grabbers.split(",").map(function (str) { return str.trim(); });
-    var resistanceList = request.body.resistance.split(",").map(function (str) { return str.trim(); });
-    var locActiveList = request.body.locationsActive.split(",").map(function (str) { return str.trim(); });
+    var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
+    var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
      
-    console.log('list items', grabberList, resistanceList);
-    data = {           name:request.body.name.trim(),
+    var data = {       name:request.body.name.trim(),
                        location:request.body.location.trim(),
                        url:request.body.url.trim(),
                        desc:request.body.desc.trim(),
-                       locationsActive:locActiveList,
                        grabbers:grabberList,
                        resistance:resistanceList,
                        submitter:request.body.submitter.trim(),
