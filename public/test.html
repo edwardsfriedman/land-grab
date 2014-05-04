@@ -38,11 +38,14 @@
                 console.log("requesting admin data...");
                 e.preventDefault();
                 var req = new XMLHttpRequest();
-                req.open('POST', '/adminList.json', true);
+                req.open('GET', '/adminList.json', true);
                 req.addEventListener('load', function(e){
                         var content = req.responseText;
                         var data = JSON.parse(content);
                         console.log("DATA", data);
+                        for(var s in data) {
+                            $('#result-list').append(s);
+                        }
                 }, false);
                 req.send();
             });
@@ -79,5 +82,6 @@
     </form>
     <h1> Get all elements in the DB: admin </h1>
     <button id='get-list' type="button">Click to get admin list</button>
+    <ul id='result-list' list-style=none max-height=100px overflow-y=scroll background=#eee padding=20px width=50%>
 </body>
 </html>

@@ -150,7 +150,7 @@ app.post('/publicInsert', function(request, response){
     var locActiveList = request.body.locationsActive.split(",").map(function (str) { return str.trim(); });
     
     console.log('list items', grabberList, resistanceList);
-    data = {           name:request.body.name.trim(),
+    var data = {           name:request.body.name.trim(),
                        location:request.body.location.trim(),
                        url:request.body.url.trim(),
                        desc:request.body.desc.trim(),
@@ -170,7 +170,7 @@ app.post('/publicInsert', function(request, response){
 });
 
 
-app.post('/adminList.json', auth, function(request, response) {
+app.get('/adminList.json', auth, function(request, response) {
 	console.log("in POST: admin list");
     collection.find().toArray(function(err,entries){
 		if(err){
@@ -198,7 +198,7 @@ app.post('/adminInsert', auth, function(request, response){
     var locActiveList = request.body.locationsActive.split(",").map(function (str) { return str.trim(); });
      
     console.log('list items', grabberList, resistanceList);
-    data = {           name:request.body.name.trim(),
+    var data = {           name:request.body.name.trim(),
                        location:request.body.location.trim(),
                        url:request.body.url.trim(),
                        desc:request.body.desc.trim(),
