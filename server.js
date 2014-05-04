@@ -35,6 +35,24 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
 			} else {
 				console.log("success");
 				userCollection = collec;
+				userCollection.count(function (err, count){
+					if(!err && count === 0){
+						//users collection is empty.  create default admin, ensure uniqueness
+						var defaultAdmin = {username : "LGAdmin", password : "defaultAdmin"}
+						userCollection.insert(defaultAdmin, function(err, result){
+							if(!err){
+								console.log("users initialized");
+							} else {
+								console.log(err);
+								exit();
+							}
+						})
+						userCollection.insert(data, function() {
+                          console.log("insert success");
+                          response.json({ success: true });
+                      });
+					};
+				})
 			}
 		});
     } else {
