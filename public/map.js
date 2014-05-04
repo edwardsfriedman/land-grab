@@ -290,6 +290,7 @@ function doSearch() {
     req.send(fd);
 }
 
+
 function postData() {
   var fd = new FormData();
   var req = new XMLHttpRequest();
@@ -299,7 +300,7 @@ function postData() {
   fd.append("desc", getVal('postDescrip'));
   fd.append("grabbers", getVal('postGrabbers'));
   fd.append("resistance", getVal('postResistance'));
-  //TODO: this is right now sending to public insert
+  //TODO: this is right now sending to public insert - whenever admin insert is handled it's slightly different and published needs to be validated
   req.open('POST', '/publicInsert', true);
   req.send(fd);
 }

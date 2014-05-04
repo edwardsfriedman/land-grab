@@ -61,6 +61,9 @@ app.get('/', function(request, response){
 	response.render('map.html');
 });
 
+app.get('/test', function(request, response){
+	response.render('test.html');
+});
 app.post('/search.json', function(request, response){
 	//search
 	console.log("SEARCH RECIEVED:");
@@ -120,21 +123,23 @@ app.post('/search.json', function(request, response){
 	});
 });
 
-app.get('/publicInsert', function(request, response){
-	console.log("PUBLIC insert");
-	response.render('test.html');
-});
 app.post('/publicInsert', function(request, response){
     // insert everything to the database
     console.log("PUBLIC insert POST: { name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
-    data = {           name:request.body.name,
-                       location:request.body.location,
-                       url:request.body.url,
-                       desc:request.body.desc,
-                       locationsActive:request.body.locationsActive,
-                       grabbers:request.body.grabbers,
-                       resistance:request.body.resistance,
-                       submitter:request.body.submitter,
+    //sanitize input (i.e. strip leading whitespace)
+    var grabberList = request.body.grabbers.split(",").map(function (str) { return str.trim(); });
+    var resistanceList = request.body.resistance.split(",").map(function (str) { return str.trim(); });
+    var locActiveList = request.body.locationsActive.split(",").map(function (str) { return str.trim(); });
+    
+    console.log('list items', grabberList, resistanceList);
+    data = {           name:request.body.name.trim(),
+                       location:request.body.location.trim(),
+                       url:request.body.url.trim(),
+                       desc:request.body.desc.trim(),
+                       locationsActive:locActiveList,
+                       grabbers:grabberList,
+                       resistance:resistanceList,
+                       submitter:request.body.submitter.trim(),
                        published:false
            };
     //console.log("data to be inserted", data);
@@ -146,13 +151,9 @@ app.post('/publicInsert', function(request, response){
 
 });
 
-//TODO: authenticate get and post for admin
-app.get('/adminList', function(request, response){
-	response.render('test.html');
-});
 
 app.post('/adminList.json', auth, function(request, response) {
-	console.log("in GET: admin list");
+	console.log("in POST: admin list");
     collection.find().toArray(function(err,entries){
 		if(err){
 			console.log("error: ");
@@ -168,23 +169,25 @@ app.post('/adminList.json', auth, function(request, response) {
 
 });
 
-app.get('/adminInsert', auth, function(request, response){
-	console.log("ADMIN insert");
-	response.render('test.html');
-});
 
 
 app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
     console.log("insert POST:", request.body._id, request.body.name, request.body.location, request.body.url, request.body.desc, request.body.locationsActive, request.body.grabbers, request.body.resistance, request.body.published);
-    data = {           name:request.body.name,
-                       location:request.body.location,
-                       url:request.body.url,
-                       desc:request.body.desc,
-                       locationsActive:request.body.locationsActive,
-                       grabbers:request.body.grabbers,
-                       resistance:request.body.resistance,
-                       submitter:request.body.submitter,
+    //sanitize input (i.e. strip leading whitespace)
+    var grabberList = request.body.grabbers.split(",").map(function (str) { return str.trim(); });
+    var resistanceList = request.body.resistance.split(",").map(function (str) { return str.trim(); });
+    var locActiveList = request.body.locationsActive.split(",").map(function (str) { return str.trim(); });
+     
+    console.log('list items', grabberList, resistanceList);
+    data = {           name:request.body.name.trim(),
+                       location:request.body.location.trim(),
+                       url:request.body.url.trim(),
+                       desc:request.body.desc.trim(),
+                       locationsActive:locActiveList,
+                       grabbers:grabberList,
+                       resistance:resistanceList,
+                       submitter:request.body.submitter.trim(),
                        published:request.body.published
            };
     if( request.body._id != -1 )
@@ -195,10 +198,6 @@ app.post('/adminInsert', auth, function(request, response){
                           response.json({ success: true });
                       });
 
-});
-app.get('/adminRemove', function(request, response){
-	console.log("ADMIN remove");
-	response.render('test.html');
 });
 app.post('/adminRemove', auth, function(request, response){
     // admin insert or update into the database
@@ -211,7 +210,7 @@ app.post('/adminRemove', auth, function(request, response){
 });
 
 app.get('/populateMap.json',function(request, response){
-	collection.find().toArray(function(err,entries){
+	collection.find({ published:'true' }).toArray(function(err,entries){
 		if(err || entries.length == 0) {
 			console.log("error or no results found");
 		} else {
