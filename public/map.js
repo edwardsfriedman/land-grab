@@ -1,4 +1,10 @@
-
+function error_handle(e) {
+        if(e.currentTarget.status == 200){
+          window.alert("success, no error");
+        } else {
+          window.alert(e);
+        }
+}
 window.addEventListener('load', function(){
  /****** MAP SETUP *******/
   var bounds = new L.LatLngBounds(new L.LatLng(85.00542734823001, 214.62890625),
@@ -18,6 +24,7 @@ window.addEventListener('load', function(){
   var req = new XMLHttpRequest();
   req.open('GET', '/populateMap.json', true);
   req.addEventListener('load', function(e){
+      error_handle(e);
     names = [];
     locations = [];
     grabbers = [];
@@ -330,6 +337,7 @@ function doSearch() {
     var req = new XMLHttpRequest();
     req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
+        error_handle(e);
       $(actionBox).slideToggle(function(){
         map.setView([55, 10], 2);
         document.getElementById("searchBox").style.display = 'none';
@@ -416,8 +424,9 @@ function postData() {
       fd.append("resistance", getVal('postResistance'));
       fd.append("submitter", getVal('postEmail'));
       //TODO: this is right now sending to public insert - whenever admin insert is handled it's slightly different and published needs to be validated
+      req.open('POST', '/publicInsert', true);
       req.addEventListener('load', function(e){
-
+        //error_handle(e)
         if(e.currentTarget.status == 200){
           window.alert("Thank you for your submission");
           clearVal('postName');
@@ -436,7 +445,6 @@ function postData() {
           window.alert(e);
         }
       });
-      req.open('POST', '/publicInsert', true);
       req.send(fd);
     } else {
       console.log(error);
