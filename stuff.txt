@@ -9,3 +9,6 @@ To print all the contents of the DB:
 To tell mongod to use a specific directory:
     $ mongod --dbpath <dir>	
 
+Default admin:
+	Username: LGAdmin
+	Password: defaultAdmin

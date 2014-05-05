@@ -1,7 +1,22 @@
+var newAdminForm;
 
 window.addEventListener('load', function(){
   loadlist();
+
+  newAdminForm = document.getElementById('newAdminForm');
+  newAdminForm.addEventListener('submit', sendAdmin, false);
 }, false);
+
+function sendAdmin(e){
+  e.preventDefault();
+
+  var fd = new FormData(newAdminForm);
+  var req = new XMLHttpRequest();
+  req.open('POST', '/createAdmin', true);
+  req.send(fd);
+  //handle errors
+  newAdminForm.reset();
+}
 
 function loadlist(){
   var request = new XMLHttpRequest();
