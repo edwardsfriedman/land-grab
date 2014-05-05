@@ -95,7 +95,7 @@ app.post('/search.json', function(request, response){
 	var grabbers = [request.body.grabbers1,request.body.grabbers2,request.body.grabbers3];
 	var typesOfResistance = [request.body.resistance1,request.body.resistance2,request.body.resistance3];
 
-   
+
     if((names[0]=='' || names[0]==undefined) &&
        (names[1]=='' || names[1]==undefined) &&
        (names[2]=='' || names[2]==undefined) &&
@@ -164,16 +164,36 @@ app.post('/search.json', function(request, response){
 	});
 });
 
+function validInput(s) {
+	if(s == undefined){
+		return false;
+	} else {
+		//check length
+		return (s.length > 5);
+	}
+}
+
+function hasWhiteSpace(s){
+		return /\s/g.test(s);
+}
+
 app.post('/createAdmin', auth, function(request, response){
 
-    var newUserName = (request.body.username==undefined)? undefined : request.body.username.trim();
-    var newPassword = (request.body.password==undefined)? undefined : request.body.password.trim();
+    var newUserName = request.body.username;
+    var newPassword1 = request.body.password1;
+    var newPassword2 = request.body.password2;
 
-    if(newUserName == undefined || newPassword == undefined || newUserName.length < 5 || newPassword.length < 5){
-    	console.log("bad password or username");
+    if(!validInput(newUserName) || !validInput(newPassword1) || !validInput(newPassword2)){
+		console.log("bad password or username");
     	response.send(400,"ERROR: Usernames and Passwords must be at least 5 characters");
+    } else if(hasWhiteSpace(newUserName) || hasWhiteSpace(newPassword1) || hasWhiteSpace(newPassword2)){
+    	console.log("whitespace in password or username");
+    	response.send(400,"ERROR: Usernames and Passwords can not contain whitespace");
+    } else if(newPassword1 != newPassword2){
+    	console.log("passwords do not match in password or username");
+    	response.send(400,"ERROR: The two passwords do not match");
     } else {
-    	var insertStatement = {username : newUserName, password : newPassword};
+    	var insertStatement = {username : newUserName, password : newPassword1};
 		userCollection.insert(insertStatement, function(err){
 		if(err){
 			console.log("error inserting new admin");
@@ -193,8 +213,8 @@ app.post('/publicInsert', function(request, response){
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
-    
-    
+
+
     if(!request.body.name) {
         console.log("ERROR: No name");
         response.send(400, 'Please enter a name');
@@ -202,7 +222,7 @@ app.post('/publicInsert', function(request, response){
     }
     var data = {       name:request.body.name.trim(),
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
-                       location:(request.body.location==undefined)? {type: Point, latlng:[0,0]} : request.body.location,
+                       location:(request.body.location==undefined)? {type: "Point", latlng:[0,0]} : request.body.location,
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,

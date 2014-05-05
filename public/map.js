@@ -21,7 +21,7 @@ window.addEventListener('load', function(){
     if(e.currentTarget.status == 200){
             window.alert("success, no error");
         } else {
-            window.alert(e);
+            window.alert(e.srcElement.response);
             return;
         }
     names = [];
@@ -340,7 +340,7 @@ function doSearch() {
         if(e.currentTarget.status == 200){
            window.alert("success, no error");
         } else {
-           window.alert(e);
+            window.alert(e.srcElement.response);
            return;
         }
       $(actionBox).slideToggle(function(){
@@ -444,7 +444,7 @@ function postData() {
           });
 
         } else {
-            window.alert(e);
+            window.alert(e.srcElement.response);
             return;
         }
       });
