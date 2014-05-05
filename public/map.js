@@ -308,7 +308,7 @@ function doSearch() {
         div.className = "result";
         div.id = datum._id;
         div.data = datum;
-        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.location.city);
+        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.city);
         div.onclick= function(e){
           var parent = e.target;
           while (parent.className !== 'result'){
@@ -318,7 +318,7 @@ function doSearch() {
         };
         resultCont.appendChild(div);
         // geoJSON
-        ltlng = [datum.latlng.lat, datum.latlng.lng];
+        ltlng = [datum.location.lat, datum.location.lng];
         ltlng.reverse();
         geo = { "type": "Feature",
                 "geometry": { "type": "Point", "coordinates": ltlng },
@@ -376,9 +376,7 @@ function expandResult(id){
   node.className = 'selectRes';
   $(node.children[1]).slideToggle();
 
-  geodude.query(data.location, function(error, result){
-    map.setView([result.latlng[0], result.latlng[1]+3], 7);
-  });
+  map.setView([data.location.lat, data.location.lng+3], 7);
   closeResults(node);
   console.log(nodeheight);
   $(resultsContain).animate({ scrollTop: nodeheight+ 5});
@@ -412,7 +410,7 @@ function postData() {
   geodude.query(getVal('postLoc'), function(error, result){
     var location;
     if (!error){
-      location = {type: 'point', latlng: result.latlng};
+      location = {type: "Point", latlng: result.latlng};
       var fd = new FormData();
       var req = new XMLHttpRequest();
       fd.append("name", getVal("postName"));
