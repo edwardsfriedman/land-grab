@@ -14,7 +14,9 @@ function sendAdmin(e){
   var req = new XMLHttpRequest();
   req.open('POST', '/createAdmin', true);
   req.send(fd);
-  //handle errors
+  req.addEventListener('load', function(e){
+    window.alert(e.srcElement.response);
+  });
   newAdminForm.reset();
 }
 

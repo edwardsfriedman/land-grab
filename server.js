@@ -164,16 +164,36 @@ app.post('/search.json', function(request, response){
 	});
 });
 
+function validInput(s) {
+	if(s == undefined){
+		return false;
+	} else {
+		//check length
+		return (s.length > 5);
+	}
+}
+
+function hasWhiteSpace(s){
+		return /\s/g.test(s);
+}
+
 app.post('/createAdmin', auth, function(request, response){
+	
+    var newUserName = request.body.username;
+    var newPassword1 = request.body.password1;
+    var newPassword2 = request.body.password2;
 
-    var newUserName = (request.body.username==undefined)? undefined : request.body.username.trim();
-    var newPassword = (request.body.password==undefined)? undefined : request.body.password.trim();
-
-    if(newUserName == undefined || newPassword == undefined || newUserName.length < 5 || newPassword.length < 5){
-    	console.log("bad password or username");
+    if(!validInput(newUserName) || !validInput(newPassword1) || !validInput(newPassword2)){
+		console.log("bad password or username");
     	response.send(400,"ERROR: Usernames and Passwords must be at least 5 characters");
+    } else if(hasWhiteSpace(newUserName) || hasWhiteSpace(newPassword1) || hasWhiteSpace(newPassword2)){
+    	console.log("whitespace in password or username");
+    	response.send(400,"ERROR: Usernames and Passwords can not contain whitespace");
+    } else if(newPassword1 != newPassword2){
+    	console.log("passwords do not match in password or username");
+    	response.send(400,"ERROR: The two passwords do not match");
     } else {
-    	var insertStatement = {username : newUserName, password : newPassword};
+    	var insertStatement = {username : newUserName, password : newPassword1};
 		userCollection.insert(insertStatement, function(err){
 		if(err){
 			console.log("error inserting new admin");
