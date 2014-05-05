@@ -277,9 +277,16 @@ app.post('/adminInsert', auth, function(request, response){
         return;
     }
 
+    if(!request.body.city) {
+        console.log("ERROR: No city");
+        response.send(400, 'Error: Please enter a city');
+        return;
+    }
+
     if(request.body.published!='true' && request.body.published!='false') {
         console.log('ERROR: Published needs to be true or false', request.body.published);
         response.send(400, 'ERROR: Published needs to be true or false');
+        return;
     }
 
     var data = {       name:request.body.name.trim(),
