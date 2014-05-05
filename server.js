@@ -246,7 +246,7 @@ app.get('/adminList.json', auth, function(request, response) {
 
 app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
-    console.log("ADMIN insert POST: { _id", request.body._id, "name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "published", request.body.published, "}");
+    console.log("ADMIN insert POST: { name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "published", request.body.published, "}");
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
@@ -256,12 +256,12 @@ app.post('/adminInsert', auth, function(request, response){
         response.send(400, 'Please enter a name');
         return;
     }
-    if(!request.body.published || request.body.published.trim()!='true' || request.body.published.trim()!='false') {
-        console.log('ERROR: Published needs to be true or false');
+    if(request.body.published!='true' && request.body.published!='false') {
+        console.log('ERROR: Published needs to be true or false', request.body.published);
         response.send(400, 'Published needs to be true or false');
     }
 
-    var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
+    var data = {       name:request.body.name.trim(),
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
                        location:(request.body.location==undefined)? {type:point, latlng:[0,0]} : request.body.location,
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
@@ -271,23 +271,35 @@ app.post('/adminInsert', auth, function(request, response){
                        submitter:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
                        published:request.body.published
        };
-    if( request.body._id != -1 )
-        data['_id']=request.body._id;
-    collection.save(data, function(err) {
+    console.log("REMOVE: ", request.body.name); 
+    collection.remove({ 'name':request.body.name}, function(err) {
+        if(err) {
+            console.log("error removing from DB", err);
+            response.send(400, 'Unable to remove data');
+        } else {
+            console.log("remove success");
+            response.send();
+        }}, 1); //NOTE: justOne parameter set to true so only 1 item is removed
+    console.log("REINSERT");
+    collection.insert(data, function(err) {
         if(err) {
             console.log("error inserting in DB", err);
             response.send(400, 'Unable to insert into DB');
         } else {
             console.log("insert success");
             response.send();
-        }
-     });
+        }});
 
 });
 app.post('/adminRemove', auth, function(request, response){
     // admin insert or update into the database
-    console.log("ADMIN removing node with _id", request.body._id);
-    collection.remove({ '_id':request.body._id }, function(err) {
+    if(!request.body.name) {
+        console.log("ERROR: No name");
+        response.send(400, 'Please enter a name');
+        return;
+    }
+    console.log("ADMIN removing node with name", request.body.name);
+    collection.remove({ 'name':request.body.name }, function(err) {
         if(err) {
             console.log("error removing from DB", err);
             response.send(400, 'Unable to remove data');
