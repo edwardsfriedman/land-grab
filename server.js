@@ -118,7 +118,7 @@ app.post('/search.json', function(request, response){
 		};
 	};
 
-	var query = { $or: [ {name : { $in: nameQuery } },{location : { $in: locQuery } },{grabbers : { $in: grabbersQuery } },{resistance : { $in: resTypeQuery } } ] };
+	var query = { $or: [ {name : { $in: nameQuery } },{city : { $in: locQuery } },{grabbers : { $in: grabbersQuery } },{resistance : { $in: resTypeQuery } } ] };
 
 	console.log("About to execute the following query: ");
 	var queryString = JSON.stringify(query);
@@ -141,13 +141,14 @@ app.post('/search.json', function(request, response){
 
 app.post('/publicInsert', function(request, response){
     // insert everything to the database
-    console.log("PUBLIC insert POST: { name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
+    console.log("PUBLIC insert POST: { name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
 
     var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
-                       location:(request.body.location==undefined)? undefined : request.body.location.trim(),//TODO: make obj
+                       city:(request.body.city==undefined)? undefined : request.body.city.trim(),
+                       location:(request.body.location==undefined)? {city:undefined, latlng:[0,0]} : request.body.location,//TODO: make obj
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
@@ -155,6 +156,7 @@ app.post('/publicInsert', function(request, response){
                        submitter:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
                        published:false
            };
+    console.log("data.location", data.location);
     //console.log("data to be inserted", data);
     // public insert uses insert because always adding new datapoint, admin insert uses save in order to update existing nodes
     collection.insert(data, function(err) {
@@ -191,13 +193,14 @@ app.get('/adminList.json', auth, function(request, response) {
 
 app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
-    console.log("PUBLIC insert POST: { id=", request.body._id, "name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "published=", request.body.published, "}");
+    console.log("ADMIN insert POST: { _id", request.body._id, "name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "published", request.body.published, "}");
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
 
     var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
-                       location:(request.body.location==undefined)? undefined : request.body.location.trim(),//TODO: make obj
+                       city:(request.body.city==undefined)? undefined : request.body.city.trim(),
+                       location:(request.body.location==undefined)? {city:undefined, latlng:[0,0]} : request.body.location,
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
