@@ -300,7 +300,7 @@ function doSearch() {
       /** geoJSON **/
       var geojson = [];
       var datalen = data.length;
-      var i, datum, geo, ltlng;
+      var i, datum, geo, ltlng, geodata;
       for (i=0; i< datalen; i++){
         datum = data[i];
         div = document.createElement('div');
@@ -317,7 +317,8 @@ function doSearch() {
         };
         resultCont.appendChild(div);
         // geoJSON
-        ltlng = [datum.location.lat, datum.location.lng];
+        geodata = JSON.parse(datum.location);
+        ltlng = [geodata.lat, geodata.lng];
         ltlng.reverse();
         geo = { "type": "Feature",
                 "geometry": { "type": "Point", "coordinates": ltlng },
