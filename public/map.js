@@ -524,7 +524,7 @@ function buildResult(url, name, descrip, grabs, resists, location){
   inner = "<p>" + name + "<br>"+ location +"</p>"+
   "<div class=fullResult>" +
   "<p><span class='under'>Description</span>: " + descrip + "</p>" +
-  "<p><span class='under'>url</span>:   <a href='" + url + "'>" + url.split('/')[2] + "</a></p>" +
+  "<p><span class='under'>url</span>:   <a href='" + url + "' target='_blank'>" + url.split('/')[2] + "</a></p>" +
   "<p><span class='under'>Culpable governments, companies & individuals:</span> " + grabberString + "</p>" +
   "<p><span class='under'>Forms of resistance:</span> " + resString + "</p></div>";
   return inner;
