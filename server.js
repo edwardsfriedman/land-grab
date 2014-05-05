@@ -78,6 +78,7 @@ app.get('/', function(request, response){
 app.get('/test', function(request, response){
 	response.render('test.html');
 });
+//TODO: shouldn't this be a 'get' req?
 app.post('/search.json', function(request, response){
 	//search
 	console.log("SEARCH RECIEVED:");

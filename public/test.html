@@ -10,6 +10,19 @@
     
         $(document).ready(function() {
             console.log("DOC READY");
+            $('#query-form').submit(function (e) {
+                    $('#query-list').empty();
+                    console.log("QUERY SUBMIT", $('#query-form').serialize());
+                    e.preventDefault();
+                    $.post('/search.json', $('#query-form').serialize(), function (data) {
+                        console.log("SENT query", data);
+                        for(var i=0;i<data.length;i++) {
+                            s='<li>' + JSON.stringify(data[i]) + '</li>';
+                            $('#query-list').append(s);
+                        }
+                        alert('sent successful'); 
+                    });
+            });
             $('#public-insert-form').submit(function (e) {
                     console.log("PUBLIC SUBMIT", $('#public-insert-form').serialize());
                     e.preventDefault();
@@ -35,6 +48,7 @@
                     });
             });
             $('#get-list').click(function (e) {
+                $('#result-list').empty();
                 console.log("requesting admin data...");
                 e.preventDefault();
                 var req = new XMLHttpRequest();
@@ -52,6 +66,7 @@
                 req.send();
             });
             $('#get-public-list').click(function (e) {
+                $('#public-list').empty();
                 console.log("requesting public data...");
                 e.preventDefault();
                 var req = new XMLHttpRequest();
@@ -70,6 +85,23 @@
             });
         });
     </script>
+    <h1> QUERY DB: </h1>    
+    <form id='query-form'>
+        Name1: <input type='text' name='name1'/>
+        Name2: <input type='text' name='name3'/>
+        Name2: <input type='text' name='name3'/>
+        Location1: <input type='text' name='location1'/>
+        Location2: <input type='text' name='location2'/>
+        Location3: <input type='text' name='location3'/>
+        Grabbers1: <input type='text' name='grabbers1'/>
+        Grabbers2: <input type='text' name='grabbers2'/>
+        Grabbers3: <input type='text' name='grabbers3'/>
+        Resistance1: <input type='text' name='resistance1'/>
+        Resistance2: <input type='text' name='resistance2'/>
+        Resistance3: <input type='text' name='resistance3'/>
+        <input type='submit' value='send'/>
+    </form>
+    <ul id='query-list' list-style=none max-height=100px overflow-y=scroll background=#eee padding=20px width=50%></ul>
     <h1> PUBLIC Insert into DB: </h1>    
     <form id='public-insert-form'>
         Name: <input type='text' name='name'/>
@@ -102,9 +134,9 @@
     </form>
     <h1> Get all elements in the DB: admin </h1>
     <button id='get-list' type="button">Click to get admin list</button>
-    <ul id='result-list' list-style=none max-height=100px overflow-y=scroll background=#eee padding=20px width=50%>
+    <ul id='result-list' list-style=none max-height=100px overflow-y=scroll background=#eee padding=20px width=50%></ul>
     <h1> Get all elements in the DB: public </h1>
     <button id='get-public-list' type="button">Click to get public list</button>
-    <ul id='public-list' list-style=none max-height=100px overflow-y=scroll background=#eee padding=20px width=50%>
+    <ul id='public-list' list-style=none max-height=100px overflow-y=scroll background=#eee padding=20px width=50%></ul>
 </body>
 </html>
