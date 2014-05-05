@@ -1,8 +1,24 @@
+var newAdminForm;
 
 window.addEventListener('load', function(){
   loadlist();
   geodude = L.mapbox.geocoder('friedboy.hml0l3kn');
+  newAdminForm = document.getElementById('newAdminForm');
+  newAdminForm.addEventListener('submit', sendAdmin, false);
 }, false);
+
+function sendAdmin(e){
+  e.preventDefault();
+
+  var fd = new FormData(newAdminForm);
+  var req = new XMLHttpRequest();
+  req.open('POST', '/createAdmin', true);
+  req.send(fd);
+  req.addEventListener('load', function(e){
+    window.alert(e.srcElement.response);
+  });
+  newAdminForm.reset();
+}
 
 function loadlist(){
   var request = new XMLHttpRequest();

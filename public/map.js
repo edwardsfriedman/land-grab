@@ -1,4 +1,3 @@
-
 window.addEventListener('load', function(){
  /****** MAP SETUP *******/
   var bounds = new L.LatLngBounds(new L.LatLng(85.00542734823001, 214.62890625),
@@ -18,6 +17,13 @@ window.addEventListener('load', function(){
   var req = new XMLHttpRequest();
   req.open('GET', '/populateMap.json', true);
   req.addEventListener('load', function(e){
+  //error_handle
+    if(e.currentTarget.status == 200){
+            window.alert("success, no error");
+        } else {
+            window.alert(e.srcElement.response);
+            return;
+        }
     names = [];
     locations = [];
     grabbers = [];
@@ -330,6 +336,13 @@ function doSearch() {
     var req = new XMLHttpRequest();
     req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
+        //error_handle
+        if(e.currentTarget.status == 200){
+           window.alert("success, no error");
+        } else {
+            window.alert(e.srcElement.response);
+           return;
+        }
       $(actionBox).slideToggle(function(){
         map.setView([55, 10], 2);
         document.getElementById("searchBox").style.display = 'none';
@@ -367,7 +380,6 @@ function expandResult(id){
   var actionBox = document.getElementById('actionBox');
   node.className = 'selectRes';
   $(node.children[1]).slideToggle();
-
   map.setView([data.location.lat, data.location.lng+3], 7);
   closeResults(node);
   console.log(nodeheight);
@@ -402,7 +414,7 @@ function postData() {
   geodude.query(getVal('postLoc'), function(error, result){
     var location;
     if (!error){
-      location = {type: "Point", latlng: result.latlng};
+      location = {type: 'Point', latlng: result.latlng};
       var fd = new FormData();
       var req = new XMLHttpRequest();
       fd.append("name", getVal("postName"));
@@ -414,8 +426,9 @@ function postData() {
       fd.append("resistance", getVal('postResistance'));
       fd.append("submitter", getVal('postEmail'));
       //TODO: this is right now sending to public insert - whenever admin insert is handled it's slightly different and published needs to be validated
+      req.open('POST', '/publicInsert', true);
       req.addEventListener('load', function(e){
-
+        //error_handle
         if(e.currentTarget.status == 200){
           window.alert("Thank you for your submission");
           clearVal('postName');
@@ -431,10 +444,10 @@ function postData() {
           });
 
         } else {
-          window.alert(e);
+            window.alert(e.srcElement.response);
+            return;
         }
       });
-      req.open('POST', '/publicInsert', true);
       req.send(fd);
     } else {
       console.log(error);
