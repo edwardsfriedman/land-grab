@@ -187,7 +187,7 @@ function openEditor(node, data){
       while (node.className !== 'pubber' && node.className !== 'unpubber'){
         node = node.parentNode;
       }
-      removeEntry(node, saveEntry);
+      saveEntry(node);
     }
     deleter = document.createElement('button');
     deleter.innerHTML = 'delete';
@@ -209,7 +209,7 @@ function openEditor(node, data){
 function removeEntry(node,cb) {
   var fd = new FormData();
   var req = new XMLHttpRequest();
-  fd.append("_id", getVal('postId'));
+  fd.append("name", getVal('postName'));
   req.open('POST', '/adminRemove', true);
   req.addEventListener('load', function(e){
     if(e.currentTarget.status == 200){
@@ -224,13 +224,13 @@ function removeEntry(node,cb) {
 function saveEntry(node){
   geodude.query(getVal('postLoc'), function(error, result){
     if (!error){
-      var location = {type: "Point", latlng: result.latlng};
+      var location = {type: "Point", lat: result.latlng[0], lng: result.latlng[1]};
       var published = document.getElementById("postPublished").checked;
       //var id = 'ObjectId("'+getVal("postId")+'")';
       console.log("published: " + published);
       var fd = new FormData();
       var req = new XMLHttpRequest();
-      fd.append("_id", getVal('postId'));
+      //fd.append("_id", getVal('postId'));
       fd.append("name", getVal("postName"));
       fd.append("location", JSON.stringify(location));
       fd.append("city", getVal('postLoc'));

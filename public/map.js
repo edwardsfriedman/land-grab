@@ -65,6 +65,7 @@ window.addEventListener('load', function(){
         }
       }
       populateDrops();
+      srchButton();
     });
     req.send();
 
@@ -310,14 +311,14 @@ function doSearch() {
         div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.city);
         div.onclick= function(e){
           var parent = e.target;
-          while (parent.className !== 'result'){
+          while (parent.className !== 'result' && parent.className !== 'selectRes'){
             parent = parent.parentNode;
           }
           expandResult(parent.id);
         };
         resultCont.appendChild(div);
         // geoJSON
-        geodata = JSON.parse(datum.location);
+        geodata = datum.location;
         ltlng = [geodata.lat, geodata.lng];
         ltlng.reverse();
         geo = { "type": "Feature",
@@ -367,12 +368,13 @@ function doSearch() {
 function markerClick(e){
   //var result = document.getElementById(e.layer.feature.properties.id);
   //console.log(e.layer.feature.properties.id);
-  expandResult(e.layer.feature.properties.id);
+  console.log("marker click called");
+  expandResult(e.layer.feature.properties.id, true);
   ltlng = e.layer.getLatLng();
   map.setView([ltlng.lat,ltlng.lng+3], 7);
 }
 
-function expandResult(id){
+function expandResult(id, marker){
   var node = document.getElementById(id);
   var nodeheight = node.offsetTop - 10;
   var heightstring = nodeheight + "px";
@@ -380,14 +382,23 @@ function expandResult(id){
   var results = document.getElementById('resultsContain');
   var actionBox = document.getElementById('actionBox');
   node.className = 'selectRes';
-  $(node.children[1]).slideToggle();
-  map.setView([data.location.lat, data.location.lng+3], 7);
-  closeResults(node);
-  console.log(nodeheight);
-  $(resultsContain).animate({ scrollTop: nodeheight+ 5});
-  if (actionBox.style.display==="none"){
-    results.style.display='block';
-    $(actionBox).slideToggle();
+  if(marker){
+    console.log("getting to marker");
+    if (node.children[1].display === "none"){
+      map.setView([data.location.lat, data.location.lng+3], 7);
+      $(node.children[1]).slideToggle();
+      closeResults(node);
+      console.log("closed others");
+    }
+    if (actionBox.style.display === "none"){ //action box is hidden
+      results.style.display='block';
+      $(actionBox).slideToggle();
+    }
+  } else {
+    $(node.children[1]).slideToggle();
+    map.setView([data.location.lat, data.location.lng+3], 7);
+    closeResults(node);
+    $(resultsContain).animate({ scrollTop: nodeheight+ 5});
   }
 }
 
