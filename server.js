@@ -291,7 +291,7 @@ app.post('/adminInsert', auth, function(request, response){
 
     var data = {       name:request.body.name.trim(),
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
-                       location:(request.body.location==undefined)? {type:point, latlng:[0,0]} : request.body.location,
+                       location:(request.body.location==undefined)? {type:point, latlng:[0,0]} : JSON.parse(request.body.location),
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
@@ -299,7 +299,7 @@ app.post('/adminInsert', auth, function(request, response){
                        submitter:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
                        published:request.body.published
        };
-    console.log("REMOVE: ", request.body.name); 
+    console.log("REMOVE: ", request.body.name);
     collection.remove({ 'name':request.body.name}, function(err) {
         if(err) {
             console.log("error removing from DB", err);
