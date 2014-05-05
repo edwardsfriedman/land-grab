@@ -404,7 +404,7 @@ function postData() {
   geodude.query(getVal('postLoc'), function(error, result){
     var location;
     if (!error){
-      location = {city: getVal('postLoc'), latlng: result.latlng};
+      location = {type: 'point', latlng: result.latlng};
       var fd = new FormData();
       var req = new XMLHttpRequest();
       fd.append("name", getVal("postName"));
@@ -417,6 +417,7 @@ function postData() {
       fd.append("submitter", getVal('postEmail'));
       //TODO: this is right now sending to public insert - whenever admin insert is handled it's slightly different and published needs to be validated
       req.addEventListener('load', function(e){
+
         if(e.currentTarget.status == 200){
           window.alert("Thank you for your submission");
           clearVal('postName');
