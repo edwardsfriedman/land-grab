@@ -42,6 +42,14 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
 						userCollection.insert(defaultAdmin, function(err, result){
 							if(!err){
 								console.log("users initialized");
+								userCollection.ensureIndex({ username: 1 }, { unique : true }, function(err){
+									if(!err){
+										console.log("index created");
+									} else {
+										console.log(err);
+										exit();
+									}
+								});
 							} else {
 								console.log(err);
 								exit();
@@ -138,6 +146,29 @@ app.post('/search.json', function(request, response){
 	});
 });
 
+app.post('/createAdmin', auth, function(request, response){
+
+    var newUserName = (request.body.username==undefined)? undefined : request.body.username.trim();
+    var newPassword = (request.body.password==undefined)? undefined : request.body.password.trim();
+
+    if(newUserName == undefined || newPassword == undefined || newUserName.length < 5 || newPassword.length < 5){
+    	console.log("bad password or username");
+    	response.send(400,"ERROR: Usernames and Passwords must be at least 5 characters");
+    } else {
+    	var insertStatement = {username : newUserName, password : newPassword};
+		userCollection.insert(insertStatement, function(err){
+		if(err){
+			console.log("error inserting new admin");
+			console.log(err);
+			response.send(400,"ERROR: Username is already taken");
+		} else {
+			console.log("insert success");
+			response.send();
+		}
+	});
+    }
+});
+
 app.post('/publicInsert', function(request, response){
     // insert everything to the database
     console.log("PUBLIC insert POST: { name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
@@ -147,7 +178,7 @@ app.post('/publicInsert', function(request, response){
 
     var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
-                       location:(request.body.location==undefined)? {type:, latlng:[0,0]} : request.body.location,
+                       location:(request.body.location==undefined)? {type: Point, latlng:[0,0]} : request.body.location,
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
