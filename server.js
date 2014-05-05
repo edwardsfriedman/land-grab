@@ -276,6 +276,11 @@ app.post('/adminInsert', auth, function(request, response){
         response.send(400, 'Please enter a name');
         return;
     }
+    if(!request.body.city) {
+        console.log("ERROR: No city");
+        response.send(400, 'Please enter a city');
+        return;
+    }
     if(request.body.published!='true' && request.body.published!='false') {
         console.log('ERROR: Published needs to be true or false', request.body.published);
         response.send(400, 'Published needs to be true or false');
