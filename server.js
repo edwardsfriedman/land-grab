@@ -95,7 +95,7 @@ app.post('/search.json', function(request, response){
 	var grabbers = [request.body.grabbers1,request.body.grabbers2,request.body.grabbers3];
 	var typesOfResistance = [request.body.resistance1,request.body.resistance2,request.body.resistance3];
 
-   
+
     if((names[0]=='' || names[0]==undefined) &&
        (names[1]=='' || names[1]==undefined) &&
        (names[2]=='' || names[2]==undefined) &&
@@ -178,7 +178,7 @@ function hasWhiteSpace(s){
 }
 
 app.post('/createAdmin', auth, function(request, response){
-	
+
     var newUserName = request.body.username;
     var newPassword1 = request.body.password1;
     var newPassword2 = request.body.password2;
@@ -213,8 +213,8 @@ app.post('/publicInsert', function(request, response){
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
-    
-    
+
+
     if(!request.body.name) {
         console.log("ERROR: No name");
         response.send(400, 'Please enter a name');
@@ -222,11 +222,7 @@ app.post('/publicInsert', function(request, response){
     }
     var data = {       name:request.body.name.trim(),
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
-<<<<<<< HEAD
                        location:(request.body.location==undefined)? {type: "Point", latlng:[0,0]} : request.body.location,
-=======
-                       location:(request.body.location==undefined)? {type: Point, latlng:[0,0]} : request.body.location,
->>>>>>> 2f7dd5ba60549e8c6be52b80e3255c93f6286a42
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
