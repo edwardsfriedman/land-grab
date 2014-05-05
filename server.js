@@ -323,7 +323,7 @@ app.post('/adminRemove', auth, function(request, response){
     // admin insert or update into the database
     if(!request.body.name) {
         console.log("ERROR: No name");
-        response.send(400, 'Please enter a name');
+        response.send(400, 'ERROR: Please enter a name');
         return;
     }
     console.log("ADMIN removing node with name", request.body.name);

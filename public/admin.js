@@ -15,7 +15,10 @@ function sendAdmin(e){
   req.open('POST', '/createAdmin', true);
   req.send(fd);
   req.addEventListener('load', function(e){
-    window.alert(e.srcElement.response);
+
+    if(e.currentTarget.status != 200){
+          window.alert(e.srcElement.response);
+    }
   });
   newAdminForm.reset();
 }
@@ -215,7 +218,7 @@ function removeEntry(node,cb) {
     if(e.currentTarget.status == 200){
       cb(node);
     } else {
-      window.alert(e);
+            window.alert(e.srcElement.response);
     }
   });
   req.send(fd);
@@ -249,7 +252,7 @@ function saveEntry(node){
           loadlist();
           console.log("entry edited");
         } else {
-          window.alert(e);
+            window.alert(e.srcElement.response);
         }
       });
       req.open('POST', '/adminInsert', true);
