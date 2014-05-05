@@ -36,8 +36,8 @@ window.addEventListener('load', function(){
           names.push(mydata[i].name);
         }
         //grab locations
-        if ($.inArray(mydata[i].location, locations) == -1){
-          locations.push(mydata[i].location);
+        if ($.inArray(mydata[i].city, locations) == -1){
+          locations.push(mydata[i].city);
         }
         //grab offenders
         if (mydata[i].grabbers){
@@ -301,7 +301,7 @@ function doSearch() {
         div.className = "result";
         div.id = datum._id;
         div.data = datum;
-        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.location);
+        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.location.city);
         div.onclick= function(e){
           var parent = e.target;
           while (parent.className !== 'result'){
