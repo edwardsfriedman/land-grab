@@ -1,6 +1,7 @@
 
 window.addEventListener('load', function(){
   loadlist();
+  geodude = L.mapbox.geocoder('friedboy.hml0l3kn');
 }, false);
 
 function loadlist(){
@@ -15,9 +16,11 @@ function loadlist(){
           var data = JSON.parse(content);
           var datalen = data.length;
           var i, entry;
+          pub.innerHTML = "<h1> published </h1>";
+          unpub.innerHTML = "<h1> unpublished </h1>";
           for (i=0; i<datalen; i++){
             entry = buildEntry(data[i]);
-            if (data[i].published){
+            if (data[i].published === "true"){
               entry.className = 'pubber';
               pub.appendChild(entry);
             } else {
@@ -36,7 +39,7 @@ function buildEntry(data){
   var j, full, grablen, grabbers, reslen, resistance, edit
   var entry = document.createElement('div');
   entry.data = data;
-  entry.innerHTML = '<h3>' + data.name + '</h3><p> ' + data.location + '</p>';
+  entry.innerHTML = '<h3>' + data.name + '</h3><p> ' + data.city + '</p>';
   entry.onclick = function(e) {
     var node = e.target;
     while (node.className !== 'pubber' && node.className !== 'unpubber'){
@@ -118,14 +121,15 @@ function closeAll(node){
 }
 
 function openEditor(node, data){
-  var j, full, grablen, grabbers, reslen, resistance, edit, saver;
+  var j, full, grablen, grabbers, reslen, resistance, edit, saver, deleter;
   var publish = data.published;
   var grabberstr = "";
   var resstr = "";
   var form = document.createElement('form');
+  form.method = "post";
   form.innerHTML = 'name: <input class="textField" id="postName" type="text" name="name" value="'+data.name+'"><br>'+
-    'location: <input class="textField" id="postLoc" type="text" name="location" value="'+data.location+'"><br>'+
-    'id: <input class="textField" id="postLink" type="text" name="link" value="'+data._id+'"><br>'+
+    'location: <input class="textField" id="postLoc" type="text" name="location" value="'+data.city+'"><br>'+
+    'id: <input class="textField" id="postId" type="text" name="link" value="'+data._id+'"><br>'+
     'url: <input class="textField" id="postLink" type="text" name="link" value="'+data.url+'"><br>'+
     'description: <input class="textField" id="postDescrip" type="text" name="desc" value="'+data.desc+'">';
     //grabbers
@@ -161,20 +165,83 @@ function openEditor(node, data){
     saver = document.createElement('button');
     saver.innerHTML = 'save';
     saver.id="post";
+    saver.setAttribute('type','button');
     saver.onclick = function(e){
       var node = e.target;
       while (node.className !== 'pubber' && node.className !== 'unpubber'){
         node = node.parentNode;
       }
-      saveEntry(node);
+      removeEntry(node, saveEntry);
+    }
+    deleter = document.createElement('button');
+    deleter.innerHTML = 'delete';
+    deleter.id="delete";
+    deleter.setAttribute('type', 'button');
+    deleter.onclick = function(e){
+      var node = e.target;
+      while (node.className !== 'pubber' && node.className !== 'unpubber'){
+        node = node.parentNode;
+      }
+      removeEntry(node, loadlist);
     }
     form.appendChild(saver);
+    form.appendChild(deleter);
     node.innerHTML = "";
     node.appendChild(form);
 }
 
+function removeEntry(node,cb) {
+  var fd = new FormData();
+  var req = new XMLHttpRequest();
+  fd.append("_id", getVal('postId'));
+  req.open('POST', '/adminRemove', true);
+  req.addEventListener('load', function(e){
+    if(e.currentTarget.status == 200){
+      cb(node);
+    } else {
+      window.alert(e);
+    }
+  });
+  req.send(fd);
+}
+
 function saveEntry(node){
-  console.log(node);
+  geodude.query(getVal('postLoc'), function(error, result){
+    if (!error){
+      var location = {type: "Point", latlng: result.latlng};
+      var published = document.getElementById("postPublished").checked;
+      //var id = 'ObjectId("'+getVal("postId")+'")';
+      console.log("published: " + published);
+      var fd = new FormData();
+      var req = new XMLHttpRequest();
+      fd.append("_id", getVal('postId'));
+      fd.append("name", getVal("postName"));
+      fd.append("location", JSON.stringify(location));
+      fd.append("city", getVal('postLoc'));
+      fd.append("url", getVal('postLink'));
+      fd.append("desc", getVal('postDescrip'));
+      fd.append("grabbers", getVal('postGrabbers'));
+      fd.append("resistance", getVal('postResistance'));
+      fd.append("submitter", getVal('postEmail'));
+      if (published){
+        fd.append("published", "true");
+      } else {
+        fd.append("published", "false");
+      }
+      req.addEventListener('load', function(e){
+        if(e.currentTarget.status == 200){
+          loadlist();
+          console.log("entry edited");
+        } else {
+          window.alert(e);
+        }
+      });
+      req.open('POST', '/adminInsert', true);
+      req.send(fd);
+    } else {
+      window.alert('Please enter a valid location.');
+    }
+  });
 }
 
 
@@ -202,4 +269,9 @@ function closeAll(node){
       $(uns[i].sub).slideToggle();
     }
   }
+}
+
+function getVal(id){
+  var field = document.getElementById(id);
+  return field.value;
 }

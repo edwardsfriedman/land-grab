@@ -147,7 +147,7 @@ app.post('/publicInsert', function(request, response){
 
     var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
-                       location:(request.body.location==undefined)? {type:, latlng:[0,0]} : request.body.location,
+                       location:(request.body.location==undefined)? {type: "Point", latlng:[0,0]} : request.body.location,
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,

@@ -66,7 +66,7 @@ theta = [{ name: "Stop African Land Grab",
 
  { name:"Boeung Kak Community",
    city:"Boeung Kak, Cambodia",
-   city: {type: "Point", lat: 12.556284, lng: 105.133795},
+   location: {type: "Point", lat: 12.556284, lng: 105.133795},
    url: "http://www.aljazeera.com/news/asia-pacific/2014/01/cambodia-arrests-land-activists-2014164590553880.html",
    desc: "Five Cambodian land activists were arrested in the latest move by authorities to suppress street protests against the government of strongman premier Hun Sen, a rights group said. The five women were detained for hours and then released on Monday as they prepared to stage a rally in front of the French Embassy to call for the release of other imprisoned human rights defenders, the Cambodian League for the Promotion and Defense of Human Rights (LICADHO) said. The activists are from the Boeung Kak community, where thousands of families have been displaced to make way for a private development of a 220-acre lake, which has been filled in with sand, in the capital Phnom Penh.",
    locationsActive: ["Boeung Kak, Cambodia"],
