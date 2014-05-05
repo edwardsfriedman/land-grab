@@ -1,7 +1,7 @@
 To import a JSON file into the DB, use:
-    $ mongoimport --jsonArray --db landGrab --collection mapPoints --file grabdata.json
+    $ mongoimport --jsonArray --db landGrab --collection mapPoints --file public/grabdata.json
     (and to populate the users collection)
-    $ mongoimport --jsonArray --db landGrab --collection users --file userdata.json
+    $ mongoimport --jsonArray --db landGrab --collection users --file public/userdata.json
 To print all the contents of the DB:
     $ mongo
         > use landGrab
