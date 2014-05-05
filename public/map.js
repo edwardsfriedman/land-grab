@@ -149,12 +149,15 @@ function shareButton(){
     var shareBox = document.getElementById('shareBox');
     var shareBut = document.getElementById('share');
     if (actionBox.style.display === "none") { //if all hidden
+      console.log("action Box invisible");
       shareBox.style.display = "block";
       searchBox.style.display = "none";
       $(actionBox).slideToggle();
       shareBut.innerHTML = "hide";
     } else {
+      console.log("action box visible");
       if (searchBox.style.display !== "none") { //if search is up
+        console.log("search is up");
           $(actionBox).slideToggle(100, function(){
             shareBox.style.display = "block";
             searchBox.style.display = "none";
@@ -162,7 +165,8 @@ function shareButton(){
             searchBut.innerHTML = "search";
             $(actionBox).slideToggle();
           });
-      } else if (resultsBox.style.display !== "none"){ //if results is up
+      } else if (resultsBox.style.display != "none"){ //if results is up
+        console.log("results visible");
           $(actionBox).slideToggle(100, function(){
             resultsBox.style.display = "none";
             searchBut.innerHTML = "search";
@@ -171,6 +175,7 @@ function shareButton(){
             $(actionBox).slideToggle();
           });
       } else { //if share is already up
+        console.log("should be hitting here");
         shareBut.innerHTML = "share";
         $(actionBox).slideToggle(100, function(){
           shareBox.style.display = "none";
@@ -306,25 +311,16 @@ function doSearch() {
         };
         resultCont.appendChild(div);
         // geoJSON
-        geodude.query(datum.location, function(error, result){
-          ltlng = result.latlng.slice();
-          ltlng.reverse();
-          geo = { "type": "Feature",
-                  "geometry": { "type": "Point", "coordinates": ltlng },
-                  "properties": { "id": datum._id, "marker-color": "#fc4353"} };
-          geojson.push(geo);
-          if (geojson.length === datalen) {
-            //console.log('duh fuck?');
-            //console.log(geojson);
-            featureLayer.setGeoJSON(geojson).addTo(map);
-          }
-          featureLayer.on('click', markerClick);
-        });
+        ltlng = [datum.latlng.lat, datum.latlng.lng];
+        ltlng.reverse();
+        geo = { "type": "Feature",
+                "geometry": { "type": "Point", "coordinates": ltlng },
+                "properties": { "id": datum._id, "marker-color": "#fc4353"} };
+        geojson.push(geo);
       }
-
-
-
-    }
+      featureLayer.setGeoJSON(geojson).addTo(map);
+      featureLayer.on('click', markerClick);
+    };
     var fd = new FormData();
     buildForm(name, "name", fd);
     buildForm(location, "location", fd);
@@ -419,6 +415,21 @@ function postData() {
       fd.append("resistance", getVal('postResistance'));
       fd.append("submitter", getVal('postEmail'));
       //TODO: this is right now sending to public insert - whenever admin insert is handled it's slightly different and published needs to be validated
+      req.addEventListener('load', function(e){
+        if(e.currentTarget.status == 200){
+          window.alert("Thank you for your submission");
+          clearVal('postName');
+          clearVal('postLink');
+          clearVal('postLoc');
+          clearVal('postDescrip');
+          clearVal('postGrabbers');
+          clearVal('postResistance');
+          clearVal('postEmail');
+          shareButton();
+        } else {
+          window.alert(e);
+        }
+      });
       req.open('POST', '/publicInsert', true);
       req.send(fd);
     } else {
@@ -463,6 +474,11 @@ function buildForm(selections, criteria, form){
 function getVal(id){
   var field = document.getElementById(id);
   return field.value;
+}
+
+function clearVal(id){
+  console.log(id);
+  document.getElementById(id).value = "";
 }
 
 function buildResult(url, name, descrip, grabs, resists, location){
