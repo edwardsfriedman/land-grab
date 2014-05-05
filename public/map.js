@@ -301,7 +301,7 @@ function doSearch() {
         div.className = "result";
         div.id = datum._id;
         div.data = datum;
-        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.location);
+        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.location.city);
         div.onclick= function(e){
           var parent = e.target;
           while (parent.className !== 'result'){
@@ -404,7 +404,7 @@ function postData() {
   geodude.query(getVal('postLoc'), function(error, result){
     var location;
     if (!error){
-      location = {name: getVal('postLoc'), latlng: result.latlng};
+      location = {city: getVal('postLoc'), latlng: result.latlng};
       var fd = new FormData();
       var req = new XMLHttpRequest();
       fd.append("name", getVal("postName"));
