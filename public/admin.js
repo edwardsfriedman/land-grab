@@ -106,8 +106,7 @@ function closeAll(node){
   var unlen = uns.length;
   var i, other;
   for (i=0; i<publen; i++){
-    console.log('pub: ' + pubs[i] + ' ' + pubs[i].sub);
-    if(pubs[i] !== node && pubs[i].sub.style.display !== "none"){
+      if(pubs[i] !== node && pubs[i].sub.style.display !== "none"){
       $(pubs[i].sub).slideToggle();
     }
   }
@@ -119,12 +118,12 @@ function closeAll(node){
 }
 
 function openEditor(node, data){
-  var j, full, grablen, grabbers, reslen, resistance, edit;
+  var j, full, grablen, grabbers, reslen, resistance, edit, saver;
   var publish = data.published;
   var grabberstr = "";
   var resstr = "";
-  node.innerHTML = '<form>'+
-    'name: <input class="textField" id="postName" type="text" name="name" value="'+data.name+'"><br>'+
+  var form = document.createElement('form');
+  form.innerHTML = 'name: <input class="textField" id="postName" type="text" name="name" value="'+data.name+'"><br>'+
     'location: <input class="textField" id="postLoc" type="text" name="location" value="'+data.location+'"><br>'+
     'id: <input class="textField" id="postLink" type="text" name="link" value="'+data._id+'"><br>'+
     'url: <input class="textField" id="postLink" type="text" name="link" value="'+data.url+'"><br>'+
@@ -140,7 +139,7 @@ function openEditor(node, data){
         }
       }
     }
-    node.innerHTML += 'culpable entities: <input class="textField" id="postGrabbers" type="text" name="grabbers" value="'+grabberstr+'"><br>';
+    form.innerHTML += 'culpable entities: <input class="textField" id="postGrabbers" type="text" name="grabbers" value="'+grabberstr+'"><br>';
     //resistance
     if(data.resistance){
       resistance = data.resistance;
@@ -152,28 +151,35 @@ function openEditor(node, data){
         }
       }
     }
-    node.innerHTML += 'forms of resistance: <input class="textField" id="postResistance" type="text" name="resistance" value="'+resstr+'"><br>'+
+    form.innerHTML += 'forms of resistance: <input class="textField" id="postResistance" type="text" name="resistance" value="'+resstr+'"><br>'+
     'your email: <input class="textField" id="postEmail" type="text" name="email" value="'+data.user+'"><br>';
     if (!publish) {
-      node.innerHTML += 'published: <input class="checkbox" type="checkbox" id="postPublished" name="pub" value="published"></br>';
+      form.innerHTML += 'published: <input class="checkbox" type="checkbox" id="postPublished" name="pub" value="published"></br>';
     } else {
-      node.innerHTML += 'published: <input class="checkbox" type="checkbox" id="postPublished" name="pub" value="published" checked="true"></br>';
+      form.innerHTML += 'published: <input class="checkbox" type="checkbox" id="postPublished" name="pub" value="published" checked="true"></br>';
     }
-    node.innerHTML += '<button id="post" onclick="saveEntry(e)">save</button></form>';
+    saver = document.createElement('button');
+    saver.innerHTML = 'save';
+    saver.id="post";
+    saver.onclick = function(e){
+      var node = e.target;
+      while (node.className !== 'pubber' && node.className !== 'unpubber'){
+        node = node.parentNode;
+      }
+      saveEntry(node);
+    }
+    form.appendChild(saver);
+    node.innerHTML = "";
+    node.appendChild(form);
 }
 
-function saveEntry(e){
-  var node = e.target;
-  while (node.className !== 'pubber' && node.className !== 'unpubber'){
-    node = node.parentNode;
-  }
-  expand(node);
+function saveEntry(node){
+  console.log(node);
 }
 
 
 
 function expand(node){
-  console.log(node);
   //var child = node.sub;
   closeAll(node);
   node.sub.style.display = "block";//$(node.sub).slideToggle()
@@ -187,7 +193,6 @@ function closeAll(node){
   var unlen = uns.length;
   var i, other;
   for (i=0; i<publen; i++){
-    console.log('pub: ' + pubs[i] + ' ' + pubs[i].sub);
     if(pubs[i] !== node && pubs[i].sub.style.display !== "none"){
       $(pubs[i].sub).slideToggle();
     }

@@ -36,8 +36,8 @@ window.addEventListener('load', function(){
           names.push(mydata[i].name);
         }
         //grab locations
-        if ($.inArray(mydata[i].location, locations) == -1){
-          locations.push(mydata[i].location);
+        if ($.inArray(mydata[i].city, locations) == -1){
+          locations.push(mydata[i].city);
         }
         //grab offenders
         if (mydata[i].grabbers){
