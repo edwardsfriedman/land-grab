@@ -378,9 +378,11 @@ function expandResult(id, marker){
   var results = document.getElementById('resultsContain');
   var actionBox = document.getElementById('actionBox');
   node.className = 'selectRes';
+  console.log("node: " + node.id);
   if(marker){
-    console.log("getting to marker");
-    if (node.children[1].display === "none"){
+    var child = node.children[1];
+    console.log("child: " + child);
+    if (child.style.display === "none"){
       map.setView([data.location.lat, data.location.lng+3], 7);
       $(node.children[1]).slideToggle();
       closeResults(node);

@@ -227,7 +227,7 @@ app.post('/publicInsert', function(request, response){
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
                        resistance:resistanceList,
-                       submitter:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
+                       user:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
                        published:false
            };
     console.log("data.location", data.location);
