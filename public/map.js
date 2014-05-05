@@ -18,12 +18,10 @@ window.addEventListener('load', function(){
   req.open('GET', '/populateMap.json', true);
   req.addEventListener('load', function(e){
   //error_handle
-    if(e.currentTarget.status == 200){
-            //window.alert("success, no error");
-        } else {
-            window.alert(e.srcElement.response);
-            return;
-        }
+    if(e.currentTarget.status != 200){
+        window.alert(e.srcElement.response);
+        return;
+    }
     names = [];
     locations = [];
     grabbers = [];
@@ -339,11 +337,9 @@ function doSearch() {
     req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
         //error_handle
-        if(e.currentTarget.status == 200){
-           //window.alert("success, no error");
-        } else {
+        if(e.currentTarget.status != 200){
             window.alert(e.srcElement.response);
-           return;
+            return;
         }
       $(actionBox).slideToggle(function(){
         map.setView([55, 10], 2);
@@ -535,7 +531,7 @@ function buildResult(url, name, descrip, grabs, resists, location){
   inner = "<p>" + name + "<br>"+ location +"</p>"+
   "<div class=fullResult>" +
   "<p><span class='under'>Description</span>: " + descrip + "</p>" +
-  "<p><span class='under'>url</span>:   <a href='" + url + "'>" + url.split('/')[2] + "</a></p>" +
+  "<p><span class='under'>url</span>:   <a href='" + url + "' target='_blank'>" + url.split('/')[2] + "</a></p>" +
   "<p><span class='under'>Culpable governments, companies & individuals:</span> " + grabberString + "</p>" +
   "<p><span class='under'>Forms of resistance:</span> " + resString + "</p></div>";
   return inner;
