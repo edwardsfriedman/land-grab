@@ -87,6 +87,24 @@ app.post('/search.json', function(request, response){
 	var grabbers = [request.body.grabbers1,request.body.grabbers2,request.body.grabbers3];
 	var typesOfResistance = [request.body.resistance1,request.body.resistance2,request.body.resistance3];
 
+   
+    if((names[0]=='' || names[0]==undefined) &&
+       (names[1]=='' || names[1]==undefined) &&
+       (names[2]=='' || names[2]==undefined) &&
+       (locations[0]=='' || locations[0]==undefined) &&
+       (locations[1]=='' || locations[1]==undefined) &&
+       (locations[2]=='' || locations[2]==undefined) &&
+       (grabbers[0]=='' || grabbers[0]==undefined) &&
+       (grabbers[1]=='' || grabbers[1]==undefined) &&
+       (grabbers[2]=='' || grabbers[2]==undefined) &&
+       (typesOfResistance[0]=='' || typesOfResistance[0]==undefined) &&
+       (typesOfResistance[1]=='' || typesOfResistance[1]==undefined) &&
+       (typesOfResistance[2]=='' || typesOfResistance[2]==undefined)) {
+        console.log("ERROR: empty query");
+        response.send(400, 'Empty query');
+        return;
+    }
+
 	var nameQuery = [];
 
 	for(name in names){
@@ -125,8 +143,8 @@ app.post('/search.json', function(request, response){
 
 	collection.find(query).toArray(function(err,entries){
 		if(err){
-			console.log("error: ");
-			console.log(err);
+			console.log("ERROR: ", err);
+            response.send('404', "The database query failed");
 		} else if(entries.length == 0) {
 			console.log("no results found");
             response.send();
@@ -144,10 +162,16 @@ app.post('/publicInsert', function(request, response){
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
-
-    var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
+    
+    
+    if(!request.body.name) {
+        console.log("ERROR: No name");
+        response.send(400, 'Please enter a name');
+        return;
+    }
+    var data = {       name:request.body.name.trim(),
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
-                       location:(request.body.location==undefined)? {type:, latlng:[0,0]} : request.body.location,
+                       location:(request.body.location==undefined)? {type:"Point", latlng:[0,0]} : request.body.location,
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
@@ -160,8 +184,8 @@ app.post('/publicInsert', function(request, response){
     // public insert uses insert because always adding new datapoint, admin insert uses save in order to update existing nodes
     collection.insert(data, function(err) {
         if(err) {
-            console.log("error inserting in DB");
-            console.log(err);
+            console.log("ERROR: unable to insert into DB", err);
+            response.send(400, 'Unable to insert into DB');
         } else {
             console.log("insert success");
             response.send();
@@ -175,13 +199,12 @@ app.get('/adminList.json', auth, function(request, response) {
 	console.log("in POST: admin list");
     collection.find().toArray(function(err,entries){
 		if(err){
-			console.log("error: ");
-			console.log(err);
-		} else if(entries.length == 0) {
+			console.log("error: ", err);
+		    response.send(400, 'Unable to get admin list');
+        } else if(entries.length == 0) {
 			console.log("no results found");
             response.send();
 		} else {
-			//console.log(entries[0].name);
 			response.json(entries);
 		}
 	});
@@ -197,6 +220,16 @@ app.post('/adminInsert', auth, function(request, response){
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
 
+    if(!request.body.name) {
+        console.log("ERROR: No name");
+        response.send(400, 'Please enter a name');
+        return;
+    }
+    if(!request.body.published || request.body.published.trim()!='true' || request.body.published.trim()!='false') {
+        console.log('ERROR: Published needs to be true or false');
+        response.send(400, 'Published needs to be true or false');
+    }
+
     var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
                        location:(request.body.location==undefined)? {type:point, latlng:[0,0]} : request.body.location,
@@ -211,8 +244,8 @@ app.post('/adminInsert', auth, function(request, response){
         data['_id']=request.body._id;
     collection.save(data, function(err) {
         if(err) {
-            console.log("error inserting in DB");
-            console.log(err);
+            console.log("error inserting in DB", err);
+            response.send(400, 'Unable to insert into DB');
         } else {
             console.log("insert success");
             response.send();
@@ -225,8 +258,8 @@ app.post('/adminRemove', auth, function(request, response){
     console.log("ADMIN removing node with _id", request.body._id);
     collection.remove({ '_id':request.body._id }, function(err) {
         if(err) {
-            console.log("error removing from DB");
-            console.log(err);
+            console.log("error removing from DB", err);
+            response.send(400, 'Unable to remove data');
         } else {
             console.log("remove success");
             response.send();
@@ -242,9 +275,14 @@ app.get('/admin', function(request, response){
 
 app.get('/populateMap.json',function(request, response){
 	collection.find({ published:'true' }).toArray(function(err,entries){
-		if(err || entries.length == 0) {
-			console.log("error or no results found");
-		} else {
+		if(err) {
+			console.log("error reading DB", err);
+            response.send(400, 'Unable to read from DB');
+		} else if(entries.length == 0) {
+            console.log("no results found");
+            response.send();
+        }
+        else {
 			response.send(entries);
 		}
 	});
