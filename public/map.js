@@ -19,7 +19,7 @@ window.addEventListener('load', function(){
   req.addEventListener('load', function(e){
   //error_handle
     if(e.currentTarget.status == 200){
-            window.alert("success, no error");
+            //window.alert("success, no error");
         } else {
             window.alert(e.srcElement.response);
             return;
@@ -339,7 +339,7 @@ function doSearch() {
     req.addEventListener('load', function(e){
         //error_handle
         if(e.currentTarget.status == 200){
-           window.alert("success, no error");
+           //window.alert("success, no error");
         } else {
             window.alert(e.srcElement.response);
            return;

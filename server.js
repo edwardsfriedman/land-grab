@@ -109,7 +109,7 @@ app.post('/search.json', function(request, response){
        (typesOfResistance[1]=='' || typesOfResistance[1]==undefined) &&
        (typesOfResistance[2]=='' || typesOfResistance[2]==undefined)) {
         console.log("ERROR: empty query");
-        response.send(400, 'Empty query');
+        response.send(400, 'ERROR: You must choose at least one search term');
         return;
     }
 
@@ -152,7 +152,7 @@ app.post('/search.json', function(request, response){
 	collection.find(query).toArray(function(err,entries){
 		if(err){
 			console.log("ERROR: ", err);
-            response.send('404', "The database query failed");
+            response.send('404', "ERROR: The database query failed");
 		} else if(entries.length == 0) {
 			console.log("no results found");
             response.send();
@@ -185,7 +185,7 @@ app.post('/createAdmin', auth, function(request, response){
 
     if(!validInput(newUserName) || !validInput(newPassword1) || !validInput(newPassword2)){
 		console.log("bad password or username");
-    	response.send(400,"ERROR: Usernames and Passwords must be at least 5 characters");
+    	response.send(400,"ERROR: Usernames and Passwords must be at least 6 characters");
     } else if(hasWhiteSpace(newUserName) || hasWhiteSpace(newPassword1) || hasWhiteSpace(newPassword2)){
     	console.log("whitespace in password or username");
     	response.send(400,"ERROR: Usernames and Passwords can not contain whitespace");
@@ -217,7 +217,7 @@ app.post('/publicInsert', function(request, response){
 
     if(!request.body.name) {
         console.log("ERROR: No name");
-        response.send(400, 'Please enter a name');
+        response.send(400, 'ERROR: Please enter a name');
         return;
     }
     var data = {       name:request.body.name.trim(),
@@ -236,7 +236,7 @@ app.post('/publicInsert', function(request, response){
     collection.insert(data, function(err) {
         if(err) {
             console.log("ERROR: unable to insert into DB", err);
-            response.send(400, 'Unable to insert into DB');
+            response.send(400, 'ERROR: Unable to insert into DB');
         } else {
             console.log("insert success");
             response.send();
@@ -251,7 +251,7 @@ app.get('/adminList.json', auth, function(request, response) {
     collection.find().toArray(function(err,entries){
 		if(err){
 			console.log("error: ", err);
-		    response.send(400, 'Unable to get admin list');
+		    response.send(400, 'ERROR: Unable to get admin list');
         } else if(entries.length == 0) {
 			console.log("no results found");
             response.send();
@@ -273,12 +273,20 @@ app.post('/adminInsert', auth, function(request, response){
 
     if(!request.body.name) {
         console.log("ERROR: No name");
-        response.send(400, 'Please enter a name');
+        response.send(400, 'ERROR: Please enter a name');
         return;
     }
+
+    if(!request.body.city) {
+        console.log("ERROR: No city");
+        response.send(400, 'Error: Please enter a city');
+        return;
+    }
+
     if(request.body.published!='true' && request.body.published!='false') {
         console.log('ERROR: Published needs to be true or false', request.body.published);
-        response.send(400, 'Published needs to be true or false');
+        response.send(400, 'ERROR: Published needs to be true or false');
+        return;
     }
 
     var data = {       name:request.body.name.trim(),
@@ -304,7 +312,7 @@ app.post('/adminInsert', auth, function(request, response){
     collection.insert(data, function(err) {
         if(err) {
             console.log("error inserting in DB", err);
-            response.send(400, 'Unable to insert into DB');
+            response.send(400, 'ERROR: Unable to insert into DB');
         } else {
             console.log("insert success");
             response.send();
@@ -322,7 +330,7 @@ app.post('/adminRemove', auth, function(request, response){
     collection.remove({ 'name':request.body.name }, function(err) {
         if(err) {
             console.log("error removing from DB", err);
-            response.send(400, 'Unable to remove data');
+            response.send(400, 'ERROR: Unable to remove data');
         } else {
             console.log("remove success");
             response.send();
@@ -340,7 +348,7 @@ app.get('/populateMap.json',function(request, response){
 	collection.find({ published:'true' }).toArray(function(err,entries){
 		if(err) {
 			console.log("error reading DB", err);
-            response.send(400, 'Unable to read from DB');
+            response.send(400, 'ERROR: Unable to read from DB');
 		} else if(entries.length == 0) {
             console.log("no results found");
             response.send();
