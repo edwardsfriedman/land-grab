@@ -1,0 +1,27 @@
+DEMO plan
+
+Search by location:
+	- show we can use up to 3 locations
+	- but only search one : New York
+	- follow link
+
+Search by 3 forms of resistence
+	- violent protest, research/scholarship, nonviolent protest, training for rural/farming men and women
+	- switch back and forth between different results, showing off mapbox functionality
+
+Search by name:
+	- Bil'in Popular Committee
+	- Follow link, next we will change this
+
+Show admin page
+	- expand Bil'in Popular Committee
+	- click edit
+	- unpublish
+	- jump back to map to show that it has dissapeared from drop down
+	- change url to http://en.wikipedia.org/wiki/Bil%27in
+	- go back to normal page and bring up result, follow new link
+
+Show share functionality:
+	- invent new event
+	- submit
+	- go to admin page and approve
