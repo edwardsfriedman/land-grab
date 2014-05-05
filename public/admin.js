@@ -15,7 +15,10 @@ function sendAdmin(e){
   req.open('POST', '/createAdmin', true);
   req.send(fd);
   req.addEventListener('load', function(e){
-    window.alert(e.srcElement.response);
+
+    if(e.currentTarget.status != 200){
+          window.alert(e.srcElement.response);
+    }
   });
   newAdminForm.reset();
 }
@@ -146,7 +149,7 @@ function openEditor(node, data){
   form.innerHTML = 'name: <input class="textField" id="postName" type="text" name="name" value="'+data.name+'"><br>'+
     'location: <input class="textField" id="postLoc" type="text" name="location" value="'+data.city+'"><br>'+
     'id: <input class="textField" id="postId" type="text" name="link" value="'+data._id+'"><br>'+
-    'url: <input class="textField" id="postLink" type="text" name="link" value="'+data.url+'"><br>'+
+    'url: <input class="textField" id="postLink" type="text" name="link" value="'+data.submitter+'"><br>'+
     'description: <input class="textField" id="postDescrip" type="text" name="desc" value="'+data.desc+'">';
     //grabbers
     if(data.grabbers){
@@ -172,7 +175,7 @@ function openEditor(node, data){
       }
     }
     form.innerHTML += 'forms of resistance: <input class="textField" id="postResistance" type="text" name="resistance" value="'+resstr+'"><br>'+
-    'your email: <input class="textField" id="postEmail" type="text" name="email" value="'+data.user+'"><br>';
+    'your email: <input class="textField" id="postEmail" type="text" name="email" value="'+data.submitter+'"><br>';
     if (!publish) {
       form.innerHTML += 'published: <input class="checkbox" type="checkbox" id="postPublished" name="pub" value="published"></br>';
     } else {
@@ -215,7 +218,7 @@ function removeEntry(node,cb) {
     if(e.currentTarget.status == 200){
       cb(node);
     } else {
-      window.alert(e);
+            window.alert(e.srcElement.response);
     }
   });
   req.send(fd);
@@ -249,7 +252,7 @@ function saveEntry(node){
           loadlist();
           console.log("entry edited");
         } else {
-          window.alert(e);
+            window.alert(e.srcElement.response);
         }
       });
       req.open('POST', '/adminInsert', true);
