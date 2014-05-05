@@ -56,7 +56,7 @@ mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database
     	process.exit(code=0);
     }
 });
-
+//TODO: does this need to send somethng to the frontend if the error case occurs?
 var auth = express.basicAuth(function(user, pass, callback){
 	var userquery = {username : user, password : pass};
 	userCollection.find(userquery).toArray(function(err,entries){
@@ -129,6 +129,7 @@ app.post('/search.json', function(request, response){
 			console.log(err);
 		} else if(entries.length == 0) {
 			console.log("no results found");
+            response.send();
 		} else {
 			console.log("Results:");
 			console.log(entries);
@@ -155,10 +156,15 @@ app.post('/publicInsert', function(request, response){
            };
     //console.log("data to be inserted", data);
     // public insert uses insert because always adding new datapoint, admin insert uses save in order to update existing nodes
-    collection.insert(data, function() {
-                          console.log("insert success");
-                          response.json({ success: true });
-                      });
+    collection.insert(data, function(err) {
+        if(err) {
+            console.log("error inserting in DB");
+            console.log(err);
+        } else {
+            console.log("insert success");
+            response.send();
+        }
+     });
 
 });
 
@@ -171,6 +177,7 @@ app.get('/adminList.json', auth, function(request, response) {
 			console.log(err);
 		} else if(entries.length == 0) {
 			console.log("no results found");
+            response.send();
 		} else {
 			//console.log(entries[0].name);
 			response.json(entries);
@@ -183,7 +190,7 @@ app.get('/adminList.json', auth, function(request, response) {
 
 app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
-    console.log("PUBLIC insert POST: { name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
+    console.log("PUBLIC insert POST: { id=", request.body._id, "name=", request.body.name, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "published=", request.body.published, "}");
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
@@ -199,20 +206,29 @@ app.post('/adminInsert', auth, function(request, response){
        };
     if( request.body._id != -1 )
         data['_id']=request.body._id;
-    //console.log("data to be inserted", data);
-    collection.save(data, function() {
-                          console.log("insert success");
-                          response.json({ success: true });
-                      });
+    collection.save(data, function(err) {
+        if(err) {
+            console.log("error inserting in DB");
+            console.log(err);
+        } else {
+            console.log("insert success");
+            response.send();
+        }
+     });
 
 });
 app.post('/adminRemove', auth, function(request, response){
     // admin insert or update into the database
     console.log("ADMIN removing node with _id", request.body._id);
-    collection.remove({ '_id':request.body._id }, function() {
-                          console.log("remove success");
-                          response.json({ success: true });
-                      }, 1); //NOTE: justOne parameter set to true so only 1 item is removed
+    collection.remove({ '_id':request.body._id }, function(err) {
+        if(err) {
+            console.log("error removing from DB");
+            console.log(err);
+        } else {
+            console.log("remove success");
+            response.send();
+        }
+    }, 1); //NOTE: justOne parameter set to true so only 1 item is removed
 
 });
 
