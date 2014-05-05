@@ -18,12 +18,10 @@ window.addEventListener('load', function(){
   req.open('GET', '/populateMap.json', true);
   req.addEventListener('load', function(e){
   //error_handle
-    if(e.currentTarget.status == 200){
-            window.alert("success, no error");
-        } else {
+    if(e.currentTarget.status != 200){
             window.alert(e.srcElement.response);
             return;
-        }
+    }
     names = [];
     locations = [];
     grabbers = [];
@@ -337,11 +335,9 @@ function doSearch() {
     req.open('POST', '/search.json', true);
     req.addEventListener('load', function(e){
         //error_handle
-        if(e.currentTarget.status == 200){
-           window.alert("success, no error");
-        } else {
+        if(e.currentTarget.status != 200){
             window.alert(e.srcElement.response);
-           return;
+            return;
         }
       $(actionBox).slideToggle(function(){
         map.setView([55, 10], 2);
