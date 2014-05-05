@@ -425,7 +425,11 @@ function postData() {
           clearVal('postGrabbers');
           clearVal('postResistance');
           clearVal('postEmail');
-          shareButton();
+          document.getElementById("share").innerHTML = "share";
+          $(actionBox).slideToggle(100, function(){
+            document.getElementById('shareBox').style.display = "none";
+          });
+
         } else {
           window.alert(e);
         }

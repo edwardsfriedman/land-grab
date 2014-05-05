@@ -57,13 +57,13 @@ body {
 }
 
 .result:hover {
-  background-color: #9DEBE9;
+  background-color: #FFCC00;
   /*background-color: #EEC591;*/
   color: black;
 }
 
 .selectRes {
-  background-color: #9DEBE9;
+  background-color: #FFCC00;
   color: black;
   border: 1px solid white;
   margin: 8px;
@@ -164,4 +164,31 @@ body {
 
 .dropRemover {
   float: right;
+}
+
+.pubber {
+  width: 100%;
+  padding: 8px;
+  background-color: #66CCFF;
+  color: black;
+  border: 1px solid white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.unpubber {
+  width: 100%;
+  padding: 8px;
+  background-color: #DB4D4D;
+  color: black;
+  border: 3px solid white;
+  font-family:Arial, Helvetica, sans-serif
+
+}
+
+.pubber:hover, .unpubber:hover{
+  background-color: #E8BF19;
+}
+
+.full {
+  display:none;
 }

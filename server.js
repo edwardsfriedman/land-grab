@@ -117,7 +117,7 @@ app.post('/search.json', function(request, response){
 		};
 	};
 
-	var query = { $or: [ {name : { $in: nameQuery } },{location : { $in: locQuery } },{grabbers : { $in: grabbersQuery } },{resistance : { $in: resTypeQuery } } ] };	
+	var query = { $or: [ {name : { $in: nameQuery } },{location : { $in: locQuery } },{grabbers : { $in: grabbersQuery } },{resistance : { $in: resTypeQuery } } ] };
 
 	console.log("About to execute the following query: ");
 	var queryString = JSON.stringify(query);
@@ -144,7 +144,7 @@ app.post('/publicInsert', function(request, response){
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
-    
+
     var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
                        location:(request.body.location==undefined)? undefined : request.body.location.trim(),//TODO: make obj
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
@@ -194,7 +194,7 @@ app.post('/adminInsert', auth, function(request, response){
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
-     
+
     var data = {       name:(request.body.name==undefined)? undefined : request.body.name.trim(),
                        location:(request.body.location==undefined)? undefined : request.body.location.trim(),//TODO: make obj
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
@@ -230,6 +230,11 @@ app.post('/adminRemove', auth, function(request, response){
         }
     }, 1); //NOTE: justOne parameter set to true so only 1 item is removed
 
+});
+
+app.get('/admin', function(request, response){
+  console.log("admin page");
+  response.render('admin.html');
 });
 
 app.get('/populateMap.json',function(request, response){
