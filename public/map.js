@@ -333,12 +333,22 @@ function doSearch() {
       } else {
         //hide box, then load content;
         $(actionBox).slideToggle(function(){
-          map.setView([55, 10], 2);
+          if(!geobox.checked)
+              map.setView([55, 10], 2);
           document.getElementById("searchBox").style.display = 'none';
           resultCont.style.display = 'block';
-          var content = req.responseText;
-          var data = JSON.parse(content);
-          cb(data);
+          if(req.responseText) {
+              var content = req.responseText;
+              var data = JSON.parse(content);
+              cb(data);
+          }
+          else {
+              console.log("EMPTY RESULTS");
+              window.alert("No results found");
+                $(actionBox).slideToggle(100, function(){
+                  shareBox.style.display = "none";
+                });
+          }
           $(actionBox).slideToggle();
         });
       }
@@ -448,11 +458,11 @@ function postData() {
   geodude.query(getVal('postLoc'), function(error, result){
     var location;
     if (!error){
-      location = [result.latlng[1], result.latlng[0]];
+      location = {lat: result.latlng[1], lng: result.latlng[0]};
       var fd = new FormData();
       var req = new XMLHttpRequest();
       fd.append("name", getVal("postName"));
-      fd.append("location", JSON.stringify(location));
+      fd.append("location", location);
       fd.append("city", getVal('postLoc'));
       fd.append("url", getVal('postLink'));
       fd.append("desc", getVal('postDescrip'));

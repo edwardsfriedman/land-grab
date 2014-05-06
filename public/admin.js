@@ -229,7 +229,7 @@ function removeEntry(node,cb) {
 function saveEntry(node){
   geodude.query(getVal('postLoc'), function(error, result){
     if (!error){
-      var location = [result.latlng[1], result.latlng[0]];
+      var location = {lat: result.latlng[1], lng: result.latlng[0]};
       var published = document.getElementById("postPublished").checked;
       //var id = 'ObjectId("'+getVal("postId")+'")';
       console.log("published: " + published);
@@ -237,7 +237,7 @@ function saveEntry(node){
       var req = new XMLHttpRequest();
       //fd.append("_id", getVal('postId'));
       fd.append("name", getVal("postName"));
-      fd.append("location", JSON.stringify(location));
+      fd.append("location", location);
       fd.append("city", getVal('postLoc'));
       fd.append("url", getVal('postLink'));
       fd.append("desc", getVal('postDescrip'));
