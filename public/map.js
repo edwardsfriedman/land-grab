@@ -358,7 +358,7 @@ function doSearch() {
                   shareBox.style.display = "none";
                 });
           }
-          $(actionBox).slideToggle();
+         $(actionBox).slideToggle();
         });
       }
     }, false);
