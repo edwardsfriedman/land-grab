@@ -37,10 +37,10 @@ window.addEventListener('load', function(){
         window.alert(e.srcElement.response);
         return;
     }
-    var names = [];
-    var locations = [];
-    var grabbers = [];
-    var resistance = [];
+    names = [];
+    locations = [];
+    grabbers = [];
+    resistance = [];
     var content = req.responseText;
     var mydata = JSON.parse(content);
     var datalen = mydata.length
