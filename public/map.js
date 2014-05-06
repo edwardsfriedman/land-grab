@@ -173,15 +173,12 @@ function shareButton(){
     var shareBox = document.getElementById('shareBox');
     var shareBut = document.getElementById('share');
     if (actionBox.style.display === "none") { //if all hidden
-      console.log("action Box invisible");
       shareBox.style.display = "block";
       searchBox.style.display = "none";
       $(actionBox).slideToggle();
       shareBut.innerHTML = "hide";
     } else {
-      console.log("action box visible");
       if (searchBox.style.display !== "none") { //if search is up
-        console.log("search is up");
           $(actionBox).slideToggle(100, function(){
             shareBox.style.display = "block";
             searchBox.style.display = "none";
@@ -190,7 +187,6 @@ function shareButton(){
             $(actionBox).slideToggle();
           });
       } else if (resultsBox.style.display != "none"){ //if results is up
-        console.log("results visible");
           $(actionBox).slideToggle(100, function(){
             resultsBox.style.display = "none";
             searchBut.innerHTML = "search";
@@ -199,7 +195,6 @@ function shareButton(){
             $(actionBox).slideToggle();
           });
       } else { //if share is already up
-        console.log("should be hitting here");
         shareBut.innerHTML = "share";
         $(actionBox).slideToggle(100, function(){
           shareBox.style.display = "none";
@@ -361,7 +356,6 @@ function doSearch() {
               cb(data);
           }
           else {
-              console.log("EMPTY RESULTS");
               window.alert("No results found");
                 $(actionBox).slideToggle(100, function(){
                   shareBox.style.display = "none";
