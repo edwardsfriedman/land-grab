@@ -208,6 +208,8 @@ function shareButton(){
     }
 }
 
+/** Helper for parsing data from call.
+ */
 function assignData(parentId){
   var data;
   switch(parentId){
@@ -227,6 +229,8 @@ function assignData(parentId){
   return data;
 }
 
+/** function for adding additional dropdown under designated criterion.
+ */
 function addDrop(buttonId, parentId, dataPointer, max) {
     var thisButton = document.getElementById(buttonId);
     var removeButton;
@@ -270,6 +274,9 @@ function addDrop(buttonId, parentId, dataPointer, max) {
     };
 }
 
+/** Helper for determining whether there are already maximum
+ * selectors for given criterion.
+ */
 function countSelectors(parent, max){
     var children = parent.children;
     var childLen = children.length;
@@ -286,6 +293,8 @@ function countSelectors(parent, max){
     }
 }
 
+/** Collects and returns selections from a group of dropdowns
+ */
 function collectSelections(id) {
     var i;
     var selections = [];
@@ -406,8 +415,8 @@ function resultsCb(data){
   featureLayer.on('click', markerClick);
 };
 
-/**
- *
+/** onclick function for mapbox marker. expands map-point's
+ * description and sets mapview to view it.
  */
 function markerClick(e){
   expandResult(e.layer.feature.properties.id, true);
@@ -415,6 +424,10 @@ function markerClick(e){
   map.setView([ltlng.lat,ltlng.lng+3], 7);
 }
 
+/** shows full info for search result, by finding it and
+ * changing display from none. calls helper to close any other
+ * open search results.
+ */
 function expandResult(id, marker){
   var node = document.getElementById(id);
   if (node){
@@ -444,6 +457,9 @@ function expandResult(id, marker){
   }
 }
 
+/** Helper function that goes through results and closes any open
+ * ones by hiding the 'fullResult' div.
+ */
 function closeResults(node){
   var results = document.getElementById('resultsContain');
   var kids = results.children;
@@ -463,6 +479,12 @@ function closeResults(node){
   }
 }
 
+/** Collects data from sharing form and submits a post call with
+ * a form data object that contains it. This is all on a callback
+ * from mapbox's geocoder query, which verifies that the location
+ * the user submitted is valid, and provides lat and lng coordinates
+ * for it.
+ */
 function postData() {
   geodude.query(getVal('postLoc'), function(error, result){
     var location;
@@ -510,6 +532,9 @@ function postData() {
   });
 }
 
+/** Adds data from an array to a form.
+ * e.g. from names array, appends names[1] to "name1" in the form.
+ */
 function buildForm(selections, criteria, form){
   var selectlen = selections.length;
   var i, datum, tag;
@@ -520,16 +545,21 @@ function buildForm(selections, criteria, form){
   return form;
 }
 
+/** Gets a html element's 'value', passed its id.
+ */
 function getVal(id){
   var field = document.getElementById(id);
   return field.value;
 }
 
+/** Clears an html element's 'value', passed its id.
+ */
 function clearVal(id){
-  console.log(id);
   document.getElementById(id).value = "";
 }
 
+/** Builds html to display a data point, whose info it's passed.
+ */
 function buildResult(url, name, descrip, grabs, resists, location){
   var grabberString;
   var grablen;
@@ -561,10 +591,10 @@ function buildResult(url, name, descrip, grabs, resists, location){
   return inner;
 }
 
-function hideresults(){
-  $(resultsContain).slideToggle();
-}
-
+/** onclick function for back button from search results.
+ * clears markers from the map, clears the search results,
+ * and re-expands search div
+ */
 function back(){
   var results = document.getElementById("resultsContain");
   var searchBox = document.getElementById("searchBox");
@@ -575,4 +605,10 @@ function back(){
     searchBox.style.display = "block";
     $(actionBox).slideToggle();
   });
+}
+
+/**defunct
+ */
+function hideresults(){
+  $(resultsContain).slideToggle();
 }
