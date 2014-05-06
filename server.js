@@ -107,7 +107,6 @@ app.post('/search.json', function(request, response){
 		SW = [bounds.sw.lng,bounds.sw.lat];
 	}
 
-	console.log("\nbounds = " + bounds);
     if((names[0]=='' || names[0]==undefined) &&
        (names[1]=='' || names[1]==undefined) &&
        (names[2]=='' || names[2]==undefined) &&
@@ -169,9 +168,9 @@ app.post('/search.json', function(request, response){
 		}
 	}
 
-	console.log("About to execute the following query: ");
+	//console.log("About to execute the following query: ");
 	var queryString = JSON.stringify(query);
-	console.log(queryString);
+	//console.log(queryString);
 
 	collection.find(query).toArray(function(err,entries){
 		if(err){
@@ -255,8 +254,6 @@ app.post('/publicInsert', function(request, response){
                        user:(request.body.user==undefined)? undefined : request.body.user.trim(),
                        published:false
            };
-    console.log("data.location", data.location);
-    //console.log("data to be inserted", data);
     // public insert uses insert because always adding new datapoint, admin insert uses save in order to update existing nodes
     collection.insert(data, function(err) {
         if(err) {
@@ -272,7 +269,6 @@ app.post('/publicInsert', function(request, response){
 
 
 app.get('/adminList.json', auth, function(request, response) {
-	console.log("in POST: admin list");
     collection.find().toArray(function(err,entries){
 		if(err){
 			console.log("error: ", err);
@@ -291,7 +287,6 @@ app.get('/adminList.json', auth, function(request, response) {
 
 app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
-    console.log("ADMIN insert POST: { name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "user=", request.body.user, "published", request.body.published, "}");
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
@@ -325,7 +320,6 @@ app.post('/adminInsert', auth, function(request, response){
                        user:(request.body.user==undefined)? undefined : request.body.user.trim(),
                        published:request.body.published
        };
-    console.log("REMOVE: ", request.body.name);
     collection.remove({ 'name':request.body.name}, function(err) {
         if(err) {
             console.log("error removing from DB", err);
@@ -334,7 +328,6 @@ app.post('/adminInsert', auth, function(request, response){
             console.log("remove success");
             response.send();
         }}, 1); //NOTE: justOne parameter set to true so only 1 item is removed
-    console.log("REINSERT");
     collection.insert(data, function(err) {
         if(err) {
             console.log("error inserting in DB", err);
@@ -352,7 +345,6 @@ app.post('/adminRemove', auth, function(request, response){
         response.send(400, 'ERROR: Please enter a name');
         return;
     }
-    console.log("ADMIN removing node with name", request.body.name);
     collection.remove({ 'name':request.body.name }, function(err) {
         if(err) {
             console.log("error removing from DB", err);
@@ -366,7 +358,6 @@ app.post('/adminRemove', auth, function(request, response){
 });
 
 app.get('/admin', function(request, response){
-  console.log("admin page");
   response.render('admin.html');
 });
 

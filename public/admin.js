@@ -26,7 +26,6 @@ function sendAdmin(e){
 function loadlist(){
   var request = new XMLHttpRequest();
   request.open('GET', '/adminList.json', true);
-  console.log('killin it');
   request.addEventListener('load', function(e){
       if (request.status == 200) {
           var content = request.responseText;
@@ -60,7 +59,6 @@ function buildEntry(data){
   entry.data = data;
   entry.innerHTML = '<h3>' + data.name + '</h3><p> ' + data.city + '</p>';
   entry.onclick = function(e) {
-    console.log('div clicked');
     var node = e.target;
     while (node.className !== 'pubber' && node.className !== 'unpubber'){
       node = node.parentNode;
@@ -107,7 +105,6 @@ function buildEntry(data){
   edit = document.createElement('button');
   edit.innerHTML = "edit";
   edit.onclick = function(e){
-    console.log('edit clicked');
     var j, full, grablen, grabbers, reslen, resistance, edit;
     var node = e.target;
     while (node.className !== 'pubber' && node.className !== 'unpubber'){
@@ -232,7 +229,6 @@ function saveEntry(node){
       var location = {lat: result.latlng[1], lng: result.latlng[0]};
       var published = document.getElementById("postPublished").checked;
       //var id = 'ObjectId("'+getVal("postId")+'")';
-      console.log("published: " + published);
       var fd = new FormData();
       var req = new XMLHttpRequest();
       //fd.append("_id", getVal('postId'));
@@ -252,7 +248,6 @@ function saveEntry(node){
       req.addEventListener('load', function(e){
         if(e.currentTarget.status == 200){
           loadlist();
-          console.log("entry edited");
         } else {
             window.alert(e.srcElement.response);
         }
