@@ -86,6 +86,7 @@ app.get('/', function(request, response){
 app.get('/test', function(request, response){
 	response.render('test.html');
 });
+
 app.post('/search.json', function(request, response){
 	//search
 	console.log("SEARCH RECIEVED:");
@@ -95,7 +96,18 @@ app.post('/search.json', function(request, response){
 	var grabbers = [request.body.grabbers1,request.body.grabbers2,request.body.grabbers3];
 	var typesOfResistance = [request.body.resistance1,request.body.resistance2,request.body.resistance3];
 
+	var boundsString = request.body.bounds;
+	var bounds, NW, NE, SE, SW;
 
+	if(boundsString){
+		bounds = JSON.parse(boundsString);
+		NW = [bounds.nw.lng,bounds.nw.lat];
+		NE = [bounds.ne.lng,bounds.ne.lat];
+		SE = [bounds.se.lng,bounds.se.lat];
+		SW = [bounds.sw.lng,bounds.sw.lat];
+	}
+
+	console.log("\nbounds = " + bounds);
     if((names[0]=='' || names[0]==undefined) &&
        (names[1]=='' || names[1]==undefined) &&
        (names[2]=='' || names[2]==undefined) &&
@@ -107,7 +119,8 @@ app.post('/search.json', function(request, response){
        (grabbers[2]=='' || grabbers[2]==undefined) &&
        (typesOfResistance[0]=='' || typesOfResistance[0]==undefined) &&
        (typesOfResistance[1]=='' || typesOfResistance[1]==undefined) &&
-       (typesOfResistance[2]=='' || typesOfResistance[2]==undefined)) {
+       (typesOfResistance[2]=='' || typesOfResistance[2]==undefined) &&
+       (bounds=='' || bounds==undefined)) {
         console.log("ERROR: empty query");
         response.send(400, 'ERROR: You must choose at least one search term');
         return;
@@ -143,7 +156,18 @@ app.post('/search.json', function(request, response){
 		};
 	};
 
-	var query = { $or: [ {name : { $in: nameQuery } },{city : { $in: locQuery } },{grabbers : { $in: grabbersQuery } },{resistance : { $in: resTypeQuery } } ] };
+	var query;
+	var boundQuery = { location : { $geoWithin : { $geometry : { type : "Polygon" , coordinates : [ [ NW , NE , SE , SW , NW ] ] } } } };
+
+	if(nameQuery.length == 0 && locQuery.length == 0 && locQuery.length == 0 && grabbersQuery.length == 0 && resTypeQuery.length == 0){
+		//no search terms provided
+		query = boundQuery;
+	} else {
+		query = { $or: [ {name : { $in: nameQuery } },{city : { $in: locQuery } },{grabbers : { $in: grabbersQuery } },{resistance : { $in: resTypeQuery } } ] };
+		if(bounds){
+			query = {$and: [query, boundQuery] };
+		}
+	}
 
 	console.log("About to execute the following query: ");
 	var queryString = JSON.stringify(query);
