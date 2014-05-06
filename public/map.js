@@ -14,6 +14,15 @@ window.addEventListener('load', function(){
   });
   map.zoomControl.setPosition('topright');
   map.scrollWheelZoom.disable();
+  //only allow geo search not at the top two levels of zoom.
+  map.on('zoomend', function(){
+    var box = document.getElementById('check');
+    if (map.getZoom() >= 4){
+      box.style.visibility = "visible";
+    } else {
+      box.style.visibility = "hidden";
+    }
+  });
 
   //***GEOCODER, FEATURELAYER*****/
   geodude = L.mapbox.geocoder('friedboy.hml0l3kn');
