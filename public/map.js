@@ -145,7 +145,6 @@ function srchButton(){
   }
 };
 
-
 function shareButton(){
     var resultsBox = document.getElementById('resultsContain');
     var actionBox = document.getElementById('actionBox');
@@ -362,9 +361,6 @@ function doSearch() {
 }
 
 function markerClick(e){
-  //var result = document.getElementById(e.layer.feature.properties.id);
-  //console.log(e.layer.feature.properties.id);
-  console.log("marker click called");
   expandResult(e.layer.feature.properties.id, true);
   ltlng = e.layer.getLatLng();
   map.setView([ltlng.lat,ltlng.lng+3], 7);
@@ -372,34 +368,33 @@ function markerClick(e){
 
 function expandResult(id, marker){
   var node = document.getElementById(id);
-  var nodeheight = node.offsetTop - 10;
-  var heightstring = nodeheight + "px";
-  var data = node.data;
-  var results = document.getElementById('resultsContain');
-  var actionBox = document.getElementById('actionBox');
-  node.className = 'selectRes';
-  console.log("node: " + node.id);
-  if(marker){
-    var child = node.children[1];
-    console.log("child: " + child);
-    if (child.style.display === "none"){
-      map.setView([data.location.lat, data.location.lng+3], 7);
+  if (node){
+    var nodeheight = node.offsetTop - 10;
+    var heightstring = nodeheight + "px";
+    var data = node.data;
+    var results = document.getElementById('resultsContain');
+    var actionBox = document.getElementById('actionBox');
+    node.className = 'selectRes';
+    if(marker){
+      var child = node.children[1];
+      if (child.style.display === "none"){
+        map.setView([data.location.lat, data.location.lng+3], 7);
+        child.style.display = "block";
+        closeResults(node);
+        console.log("closed others");
+      }
+      if (actionBox.style.display === "none"){ //action box is hidden
+        results.style.display='block';
+        $(actionBox).slideToggle();
+      }
+    } else {
       $(node.children[1]).slideToggle();
+      map.setView([data.location.lat, data.location.lng+3], 7);
       closeResults(node);
-      console.log("closed others");
+      $(resultsContain).animate({ scrollTop: nodeheight+ 5});
     }
-    if (actionBox.style.display === "none"){ //action box is hidden
-      results.style.display='block';
-      $(actionBox).slideToggle();
-    }
-  } else {
-    $(node.children[1]).slideToggle();
-    map.setView([data.location.lat, data.location.lng+3], 7);
-    closeResults(node);
-    $(resultsContain).animate({ scrollTop: nodeheight+ 5});
   }
 }
-
 
 function closeResults(node){
   var results = document.getElementById('resultsContain');
@@ -434,7 +429,7 @@ function postData() {
       fd.append("desc", getVal('postDescrip'));
       fd.append("grabbers", getVal('postGrabbers'));
       fd.append("resistance", getVal('postResistance'));
-      fd.append("submitter", getVal('postEmail'));
+      fd.append("user", getVal('postEmail'));
       //TODO: this is right now sending to public insert - whenever admin insert is handled it's slightly different and published needs to be validated
       req.open('POST', '/publicInsert', true);
       req.addEventListener('load', function(e){
@@ -466,27 +461,6 @@ function postData() {
     }
   });
 }
-
-
-/** currently unused **/
-function request(url, callback, container) {
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-
-    request.addEventListener('load', function(e){
-        if (request.status == 200) {
-            //container.innerHTML = "";
-            var content = request.responseText;
-            var data = JSON.parse(content);
-            callback(data);
-        } else {
-            console.log(request.status);
-        }
-    }, false);
-
-    request.send(null);
-}
-
 
 function buildForm(selections, criteria, form){
   var selectlen = selections.length;
@@ -531,7 +505,7 @@ function buildResult(url, name, descrip, grabs, resists, location){
     resString += ", ";
   }
   inner = "<p>" + name + "<br>"+ location +"</p>"+
-  "<div class=fullResult>" +
+  "<div class=fullResult style='display: none'>" +
   "<p><span class='under'>Description</span>: " + descrip + "</p>" +
   "<p><span class='under'>url</span>:   <a href='" + url + "' target='_blank'>" + url.split('/')[2] + "</a></p>" +
   "<p><span class='under'>Culpable governments, companies & individuals:</span> " + grabberString + "</p>" +
@@ -546,6 +520,7 @@ function hideresults(){
 function back(){
   var results = document.getElementById("resultsContain");
   var searchBox = document.getElementById("searchBox");
+  featureLayer.clearLayers();
   $(actionBox).slideToggle(100, function(){
     results.innerHTML="";
     results.style.display = "none";

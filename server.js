@@ -209,7 +209,7 @@ app.post('/createAdmin', auth, function(request, response){
 
 app.post('/publicInsert', function(request, response){
     // insert everything to the database
-    console.log("PUBLIC insert POST: { name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "}");
+    console.log("PUBLIC insert POST: { name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "user=", request.body.user, "}");
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
@@ -227,7 +227,7 @@ app.post('/publicInsert', function(request, response){
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
                        resistance:resistanceList,
-                       user:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
+                       user:(request.body.user==undefined)? undefined : request.body.user.trim(),
                        published:false
            };
     console.log("data.location", data.location);
@@ -266,7 +266,7 @@ app.get('/adminList.json', auth, function(request, response) {
 
 app.post('/adminInsert', auth, function(request, response){
     // admin insert or update into the database
-    console.log("ADMIN insert POST: { name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "submitter=", request.body.submitter, "published", request.body.published, "}");
+    console.log("ADMIN insert POST: { name=", request.body.name, "city", request.body.city, "loc=", request.body.location, "url=", request.body.url, "desc=", request.body.desc,"locActive=",  request.body.locationsActive, "grabbers=", request.body.grabbers, "resistance=", request.body.resistance, "user=", request.body.user, "published", request.body.published, "}");
     //sanitize input (i.e. strip leading whitespace)
     var grabberList = (request.body.grabbers==undefined)? request.body.grabbers : request.body.grabbers.split(",").map(function (str) { return str.trim(); });
     var resistanceList = (request.body.resistance==undefined)? request.body.resistance : request.body.resistance.split(",").map(function (str) { return str.trim(); });
@@ -296,7 +296,7 @@ app.post('/adminInsert', auth, function(request, response){
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
                        resistance:resistanceList,
-                       submitter:(request.body.submitter==undefined)? undefined : request.body.submitter.trim(),
+                       user:(request.body.user==undefined)? undefined : request.body.user.trim(),
                        published:request.body.published
        };
     console.log("REMOVE: ", request.body.name);

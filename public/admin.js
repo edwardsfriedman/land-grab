@@ -60,6 +60,7 @@ function buildEntry(data){
   entry.data = data;
   entry.innerHTML = '<h3>' + data.name + '</h3><p> ' + data.city + '</p>';
   entry.onclick = function(e) {
+    console.log('div clicked');
     var node = e.target;
     while (node.className !== 'pubber' && node.className !== 'unpubber'){
       node = node.parentNode;
@@ -101,11 +102,12 @@ function buildEntry(data){
       }
     }
   }
-  full.innerHTML += "<p>submitter: " + data.user+
+  full.innerHTML += "<p>user: " + data.user+
                     "<p>published: " + data.published;
   edit = document.createElement('button');
   edit.innerHTML = "edit";
   edit.onclick = function(e){
+    console.log('edit clicked');
     var j, full, grablen, grabbers, reslen, resistance, edit;
     var node = e.target;
     while (node.className !== 'pubber' && node.className !== 'unpubber'){
@@ -149,7 +151,7 @@ function openEditor(node, data){
   form.innerHTML = 'name: <input class="textField" id="postName" type="text" name="name" value="'+data.name+'"><br>'+
     'location: <input class="textField" id="postLoc" type="text" name="location" value="'+data.city+'"><br>'+
     'id: <input class="textField" id="postId" type="text" name="link" value="'+data._id+'"><br>'+
-    'url: <input class="textField" id="postLink" type="text" name="link" value="'+data.submitter+'"><br>'+
+    'url: <input class="textField" id="postLink" type="text" name="link" value="'+data.url+'"><br>'+
     'description: <input class="textField" id="postDescrip" type="text" name="desc" value="'+data.desc+'">';
     //grabbers
     if(data.grabbers){
@@ -175,7 +177,7 @@ function openEditor(node, data){
       }
     }
     form.innerHTML += 'forms of resistance: <input class="textField" id="postResistance" type="text" name="resistance" value="'+resstr+'"><br>'+
-    'your email: <input class="textField" id="postEmail" type="text" name="email" value="'+data.submitter+'"><br>';
+    'your email: <input class="textField" id="postEmail" type="text" name="email" value="'+data.user+'"><br>';
     if (!publish) {
       form.innerHTML += 'published: <input class="checkbox" type="checkbox" id="postPublished" name="pub" value="published"></br>';
     } else {
@@ -241,7 +243,7 @@ function saveEntry(node){
       fd.append("desc", getVal('postDescrip'));
       fd.append("grabbers", getVal('postGrabbers'));
       fd.append("resistance", getVal('postResistance'));
-      fd.append("submitter", getVal('postEmail'));
+      fd.append("user", getVal('postEmail'));
       if (published){
         fd.append("published", "true");
       } else {
@@ -269,7 +271,7 @@ function expand(node){
   //var child = node.sub;
   closeAll(node);
   node.sub.style.display = "block";//$(node.sub).slideToggle()
-
+  node.onclick = function(){};
 }
 
 function closeAll(node){
@@ -281,11 +283,26 @@ function closeAll(node){
   for (i=0; i<publen; i++){
     if(pubs[i] !== node && pubs[i].sub.style.display !== "none"){
       $(pubs[i].sub).slideToggle();
+      pubs[i].onclick = function(e) {
+        var node = e.target;
+        while (node.className !== 'pubber' && node.className !== 'unpubber'){
+          node = node.parentNode;
+        }
+        expand(node);
+      };
     }
   }
   for (i=0; i<unlen; i++){
     if(uns[i] !== node && uns[i].sub.style.display !== "none"){
-      $(uns[i].sub).slideToggle();
+      $(uns[i].sub).slideToggle(100, function(){
+        uns[i].onclick = function(e) {
+          var node = e.target;
+          while (node.className !== 'pubber' && node.className !== 'unpubber'){
+            node = node.parentNode;
+          }
+          expand(node);
+        };
+      });
     }
   }
 }
