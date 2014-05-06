@@ -306,39 +306,7 @@ function doSearch() {
 
     var url = document.URL + "/search.json";
     //call back for creating search results
-    var cb = function(data){
-      resultCont.innerHTML = "<span class='bolder'>results:</span> <button class='container' type='button' id='resultsBack' onclick='back()'> <-- </button><br>";
-      /** geoJSON **/
-      var geojson = [];
-      var datalen = data.length;
-      var i, datum, geo, ltlng, geodata;
-      for (i=0; i< datalen; i++){
-        datum = data[i];
-        div = document.createElement('div');
-        div.className = "result";
-        div.id = datum._id;
-        div.data = datum;
-        div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.city);
-        div.onclick= function(e){
-          var parent = e.target;
-          while (parent.className !== 'result' && parent.className !== 'selectRes'){
-            parent = parent.parentNode;
-          }
-          expandResult(parent.id);
-        };
-        resultCont.appendChild(div);
-        // geoJSON
-        geodata = datum.location;
-        ltlng = [geodata.lat, geodata.lng];
-        ltlng.reverse();
-        geo = { "type": "Feature",
-                "geometry": { "type": "Point", "coordinates": ltlng },
-                "properties": { "id": datum._id, "marker-color": "#fc4353"} };
-        geojson.push(geo);
-      }
-      featureLayer.setGeoJSON(geojson).addTo(map);
-      featureLayer.on('click', markerClick);
-    };
+    var cb = resultsCb;
     var fd = new FormData();
     buildForm(name, "name", fd);
     buildForm(location, "location", fd);
@@ -371,9 +339,6 @@ function doSearch() {
           var content = req.responseText;
           var data = JSON.parse(content);
           cb(data);
-          if(resultCont.style.display === "none" || resultCont.style.display ==="block"){
-            //$(resultsContain).slideToggle();
-          }
           $(actionBox).slideToggle();
         });
       }
@@ -381,6 +346,50 @@ function doSearch() {
     req.send(fd);
 }
 
+/** Callback for search results. For each result builds div to display
+ * and adds geojson object to a layer to be displayed on the map.
+ */
+function resultsCb(data){
+  var resultCont = document.getElementById("resultsContain");
+  resultCont.innerHTML = "<span class='bolder'>results:</span> <button class='container' type='button' id='resultsBack' onclick='back()'> <-- </button><br>";
+  /** geoJSON **/
+  //build div and geojson object for each search Result.
+  var geojson = [];
+  var datalen = data.length;
+  var i, datum, geo, ltlng, geodata;
+  for (i=0; i< datalen; i++){
+    datum = data[i];
+    div = document.createElement('div');
+    div.className = "result";
+    div.id = datum._id;
+    div.data = datum;
+    div.innerHTML = buildResult(datum.url, datum.name, datum.desc, datum.grabbers, datum.resistance, datum.city);
+    //onclick for compressed div, makes sure node is selected, then calls expand with result.
+    div.onclick= function(e){
+      var parent = e.target;
+      while (parent.className !== 'result' && parent.className !== 'selectRes'){
+        parent = parent.parentNode;
+      }
+      expandResult(parent.id);
+    };
+    resultCont.appendChild(div);
+    // geoJSON
+    geodata = datum.location;
+    ltlng = [geodata[1], geodata[0]];
+    ltlng.reverse();
+    geo = { "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": ltlng },
+            "properties": { "id": datum._id, "marker-color": "#fc4353"} };
+    geojson.push(geo);
+  }
+  //add geojson features to map, and assign their functionality.
+  featureLayer.setGeoJSON(geojson).addTo(map);
+  featureLayer.on('click', markerClick);
+};
+
+/**
+ *
+ */
 function markerClick(e){
   expandResult(e.layer.feature.properties.id, true);
   ltlng = e.layer.getLatLng();
@@ -399,10 +408,9 @@ function expandResult(id, marker){
     if(marker){
       var child = node.children[1];
       if (child.style.display === "none"){
-        map.setView([data.location.lat, data.location.lng+3], 7);
+        map.setView([data.location[1], data.location[0]+3], 7);
         child.style.display = "block";
         closeResults(node);
-        console.log("closed others");
       }
       if (actionBox.style.display === "none"){ //action box is hidden
         results.style.display='block';
@@ -410,7 +418,7 @@ function expandResult(id, marker){
       }
     } else {
       $(node.children[1]).slideToggle();
-      map.setView([data.location.lat, data.location.lng+3], 7);
+      map.setView([data.location[1], data.location[0]+3], 7);
       closeResults(node);
       $(resultsContain).animate({ scrollTop: nodeheight+ 5});
     }
@@ -440,7 +448,7 @@ function postData() {
   geodude.query(getVal('postLoc'), function(error, result){
     var location;
     if (!error){
-      location = {type: 'Point', latlng: result.latlng};
+      location = [result.latlng[1], result.latlng[0]];
       var fd = new FormData();
       var req = new XMLHttpRequest();
       fd.append("name", getVal("postName"));

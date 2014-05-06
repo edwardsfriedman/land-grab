@@ -229,7 +229,7 @@ function removeEntry(node,cb) {
 function saveEntry(node){
   geodude.query(getVal('postLoc'), function(error, result){
     if (!error){
-      var location = {type: "Point", lat: result.latlng[0], lng: result.latlng[1]};
+      var location = [result.latlng[1], result.latlng[0]];
       var published = document.getElementById("postPublished").checked;
       //var id = 'ObjectId("'+getVal("postId")+'")';
       console.log("published: " + published);
