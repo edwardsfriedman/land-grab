@@ -322,7 +322,7 @@ function doSearch() {
     buildForm(grabbers, "grabbers", fd);
     buildForm(resistance, "resistance", fd);
     // if geo-bounded search: grab bounds from map and include them in form;
-    if (geobox.checked){
+    if (geobox.checked && map.getZoom() >= 4){
       var bounds = map.getBounds();
       var boundsobj = {};
       boundsobj.ne = {lat: bounds.getNorthEast().lat, lng: bounds.getNorthEast().lng};
