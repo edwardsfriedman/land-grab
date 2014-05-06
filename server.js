@@ -17,7 +17,7 @@ var collectionName = "mapPoints";
 var userCollectName = "users";
 
 var mongoClient = new MongoClient(new Server('localhost', 27017));
-mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database) {
+mongoClient.connect("mongodb://anna:mypwd@oceanic.mongohq.com:10044/landGrabCS132", function(err, database) {
     if(!err) {
         console.log("We are connected");
 		db = database;

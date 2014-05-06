@@ -14,7 +14,7 @@ There are two main components to our application, the frontend (Mapbox, jQuery, 
 
 The backend is written in node.js on the Express framework. The backend is implemented in MongoDB, a NoSQL database. We chose to use Mongo because of the ease of use and the potential for geospacial querying. The frontend sends asynchronous queries to the backend to populate the map.
 
-To run: start a ‘mongos’ instance, then run ‘node server.js’.
+To run: start a ‘mongod’ instance, then run ‘node server.js’.
 To import a JSON file into the DB, use:
     $ mongoimport --jsonArray --db landGrab --collection mapPoints --file public/grabdata.json
     (and to populate the users collection)
