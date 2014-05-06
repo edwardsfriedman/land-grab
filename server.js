@@ -245,8 +245,9 @@ app.post('/publicInsert', function(request, response){
         return;
     }
     var data = {       name:request.body.name.trim(),
+    				   type: "Point",
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
-                       location:(request.body.location==undefined)? {type: "Point", latlng:[0,0]} : request.body.location,
+                       location:(request.body.location==undefined)? [0,0] : [JSON.parse(request.body.location).lng,JSON.parse(request.body.location).lat],
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
@@ -314,8 +315,9 @@ app.post('/adminInsert', auth, function(request, response){
     }
 
     var data = {       name:request.body.name.trim(),
+    	    		   type: "Point",
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),
-                       location:(request.body.location==undefined)? {type:point, latlng:[0,0]} : JSON.parse(request.body.location),
+                       location:(request.body.location==undefined)? [0,0] : [JSON.parse(request.body.location).lng,JSON.parse(request.body.location).lat],
                        url:(request.body.url==undefined)? undefined : request.body.url.trim(),
                        desc:(request.body.desc==undefined)? undefined : request.body.desc.trim(),
                        grabbers:grabberList,
