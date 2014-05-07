@@ -481,13 +481,12 @@ function closeResults(node){
  */
 function postData() {
   geodude.query(getVal('postLoc'), function(error, result){
-    var location;
     if (!error){
-      location = {lat: result.latlng[1], lng: result.latlng[0]};
+      var location = {lat: result.latlng[1], lng: result.latlng[0]};
       var fd = new FormData();
       var req = new XMLHttpRequest();
       fd.append("name", getVal("postName"));
-      fd.append("location", location);
+      fd.append("location", JSON.stringify(location));
       fd.append("city", getVal('postLoc'));
       fd.append("url", getVal('postLink'));
       fd.append("desc", getVal('postDescrip'));
