@@ -139,13 +139,28 @@ function closeAll(node){
   var unlen = uns.length;
   var i, other;
   for (i=0; i<publen; i++){
-      if(pubs[i] !== node && pubs[i].sub.style.display !== "none"){
+    if(pubs[i] !== node && pubs[i].sub.style.display !== "none"){
       $(pubs[i].sub).slideToggle();
+      pubs[i].onclick = function(e) {
+        var node = e.target;
+        while (node.className !== 'pubber' && node.className !== 'unpubber'){
+          node = node.parentNode;
+        }
+        expand(node);
+      };
     }
   }
   for (i=0; i<unlen; i++){
     if(uns[i] !== node && uns[i].sub.style.display !== "none"){
-      $(uns[i].sub).slideToggle();
+      $(uns[i].sub).slideToggle(100, function(){
+        uns[i].onclick = function(e) {
+          var node = e.target;
+          while (node.className !== 'pubber' && node.className !== 'unpubber'){
+            node = node.parentNode;
+          }
+          expand(node);
+        };
+      });
     }
   }
 }
