@@ -3,6 +3,9 @@ land-grab
 
 Mapping the Global Land Grab
 
+Developers : Anna Herlihy (aherlihy), Edward Friedman (esfriedm), Travis Lloyd (tlloyd)
+Designer : ma45
+
 =========
 
 Outline
@@ -42,7 +45,7 @@ The default admin username and password for the website:
 Security 
 --------
 
-Authentication is handled by express BasicAuth. While this is effective in the short term, if this website were to go live we recommend buying a certificate and using HTTPS to encrypt and send information instead of HTTP because it is a lot more secure.
+Authentication is handled by express BasicAuth. While this is effective in the short term, if this website were to go live we recommend buying a certificate and using HTTPS to encrypt and send information instead of HTTP because it is a lot more secure.  As of now usernames and passwords are send and stored unencrypted.
 
 
 Frontend
@@ -63,7 +66,7 @@ The backend is written in Node.js on top of the Express framework. When the serv
 
 Error handling is mostly done on the backend, as a precaution against potential threats. There is basic user input sanitation that occurs on the frontend to simplify the control flow, but any user input that could potential cause erratic behavior is tested for on the backend. Since the administrator is hand-picking  the data points that are allowed to be displayed on the map, there is no need for validating user information automatically (i.e. test that URLS are valid, etc.). There is also no thread of SQL injection, since the database does not run on SQL and so the backend does not have to sanitize user input against potential attacks.
 
-Administrators can be made by the head administrator, which in this case would be Professor Perry. Once administrators are made, they have control over what makes it on to the map but cannot create other administrators. This is done as a security precaution. Separate administrator pages are accessible for those who are authenticated, where various administrator functionality is handled (adding, removing, etc).
+The Administrator page is accessed at /admin.  Administrators can be made by other administrators using the "Create a new admin" form at the top of the page. Once administrators are made, they have control over what makes it on to the map. This is done as a security precaution. This administrator page is accessible for those who are authenticated, where various administrator functionality is handled (adding, removing, etc).
 
 When users insert into the database their information is automatically set to unpublished. Only an administrator can publish and modify an existing datapoint. The latitude and longitude are generated from the location input, which is verified. The user is free to input whatever fields they wish although they are required to provide at least a name and location. If two users were to input information for the same movement, both would be inserted into the database as unpublished so the administrator could potentially consolidate the sources. The administrator can also delete nodes from the list of published and unpublished data points, which is only accessible from the administrator pages.
 
