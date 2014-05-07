@@ -14,21 +14,30 @@ There are two main components to our application, the frontend (Mapbox, jQuery, 
 
 The backend is written in node.js on the Express framework. The backend is implemented in MongoDB, a NoSQL database. We chose to use Mongo because of the ease of use and the potential for geospacial querying. The frontend sends asynchronous queries to the backend to populate the map.
 
-To run: start a ‘mongod’ instance, then run ‘node server.js’.
-To import a JSON file into the DB, use:
-    $ mongoimport --jsonArray --db landGrab --collection mapPoints --file public/grabdata.json
-    (and to populate the users collection)
-    $ mongoimport --jsonArray --db landGrab --collection users --file public/userdata.json
-To print all the contents of the DB:
-    $ mongo
-        > use landGrab
-        > db.mapPoints.find()
-To tell mongod to use a specific directory:
-    $ mongod --dbpath <dir>
 
-Default admin:
+Currently the DB is hosted on MongoHQ. MongoHQ is a platform for MongoDB hosting on the web, so the data is stored on the cloud and it should be accessible from anywhere the app is run. In order to run the app, just clone the repo and run:
+    node server.js
+
+
+In the case that MongoHQ goes down, and the DB needs to be run locally, then the DB can be set up on localhost.
+    (1) install MongoDB (NOTE: VERSION MATTERS!!! USE 2.4.1.)
+    (2) start the server instance by running: 'mongod'
+    (3) load the data into the DB by running: './dbimport_local.sh'
+    (4) instead of connecting to MongoHQ, connect to localhost. This can happen by changing the argument to mongoClient.connect on line 20 of server.js.
+        Replace the line: 
+            mongoClient.connect("mongodb://anna:mypwd@oceanic.mongohq.com:10044/landGrabCS132", function(err, database) {
+        with the line:
+            mongoClient.connect("mongodb://localhost:27017/" + dbUrl, function(err, database) {
+    (4) npm update
+    (5) node server.js
+
+
+If you want to set up a new MongoHQ instance for some reason, then create the new instance on MongoHQ (https://app.mongohq.com/). Then run 'dbimport.sh' replacing the variables with the appropriate names, users, and password. Then update the mongoClient.connect function on line 20 of server.js to point to the right URL. 
+
+The default admin username and password for the website:
     Username: LGAdmin
     Password: defaultAdmin
+
 
 Security 
 --------
