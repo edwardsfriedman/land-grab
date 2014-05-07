@@ -243,6 +243,9 @@ app.post('/publicInsert', function(request, response){
         response.send(400, 'ERROR: Please enter a name');
         return;
     }
+
+    console.log("location = " + request.body.location);
+    console.log(JSON.parse(request.body.location));
     var data = {       name:request.body.name.trim(),
     				   type: "Point",
                        city:(request.body.city==undefined)? undefined : request.body.city.trim(),

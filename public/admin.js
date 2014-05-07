@@ -265,7 +265,7 @@ function saveEntry(node){
       var fd = new FormData();
       var req = new XMLHttpRequest();
       fd.append("name", getVal("postName"));
-      fd.append("location", location);
+      fd.append("location", JSON.stringify(location));
       fd.append("city", getVal('postLoc'));
       fd.append("url", getVal('postLink'));
       fd.append("desc", getVal('postDescrip'));
