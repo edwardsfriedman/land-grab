@@ -346,22 +346,23 @@ function doSearch() {
       } else {
         //hide box, then load content;
         $(actionBox).slideToggle(function(){
-          if(!geobox.checked)
+          if(!geobox.checked){
               map.setView([55, 10], 2);
-          document.getElementById("searchBox").style.display = 'none';
-          resultCont.style.display = 'block';
+          }
           if(req.responseText) {
+              document.getElementById("searchBox").style.display = 'none';
+              resultCont.style.display = 'block';
               var content = req.responseText;
               var data = JSON.parse(content);
               cb(data);
           }
           else {
               window.alert("No results found");
-                $(actionBox).slideToggle(100, function(){
-                  shareBox.style.display = "none";
-                });
+              //$(actionBox).slideToggle(100, function(){
+              searchBox.style.display = "block";
+              //});
           }
-         $(actionBox).slideToggle();
+          $(actionBox).slideToggle();
         });
       }
     }, false);
