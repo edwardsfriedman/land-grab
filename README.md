@@ -23,6 +23,7 @@ Currently the DB is hosted on MongoHQ. MongoHQ is a platform for MongoDB hosting
 
 
 In the case that MongoHQ goes down, and the DB needs to be run locally, then the DB can be set up on localhost.
+
     (1) install MongoDB (NOTE: VERSION MATTERS!!! USE 2.4.1.)
     (2) start the server instance by running: 'mongod'
     (3) load the data into the DB by running: './dbimport_local.sh'
